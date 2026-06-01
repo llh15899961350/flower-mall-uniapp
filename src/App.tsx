@@ -24,7 +24,7 @@ export default function App() {
   });
 
   // Navigation tab states
-  const [activeTab, setActiveTab] = useState<'index' | 'list'>('index');
+  const [activeTab, setActiveTab] = useState<'index' | 'list' | 'store' | 'user'>('index');
 
   // Logs stream tracker
   const [logs, setLogs] = useState<ConsoleLog[]>([

@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+/* 微信小程序和Web端 经典高定启动页「由左向右由灰变黑」渐变过渡动效 */
+.text-sweep {
+  background: linear-gradient(to right, #111111 0%, #111111 50%, #e5e5e5 50%, #e5e5e5 100%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  transition: background-position 1500ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.text-sweep-active {
+  background-position: 0 0;
+}

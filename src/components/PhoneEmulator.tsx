@@ -9,6 +9,7 @@ import {
   Wifi, 
   Battery, 
   ChevronLeft, 
+  ArrowLeft,
   MoreHorizontal, 
   Circle, 
   ShoppingBag, 
@@ -22,15 +23,25 @@ import {
   ArrowRight,
   SlidersHorizontal,
   Home,
-  Grid
+  Grid,
+  Search,
+  Menu,
+  Store,
+  User,
+  Phone,
+  MapPin,
+  Ticket,
+  MessageSquare,
+  Award,
+  Settings
 } from 'lucide-react';
 import { Product, ConfigState } from '../types';
 
 interface PhoneEmulatorProps {
   config: ConfigState;
   products: Product[];
-  activeTab: 'index' | 'list';
-  setActiveTab: (tab: 'index' | 'list') => void;
+  activeTab: 'index' | 'list' | 'store' | 'user';
+  setActiveTab: (tab: 'index' | 'list' | 'store' | 'user') => void;
   onLog: (type: 'info' | 'warn' | 'success' | 'error', source: string, message: string) => void;
 }
 
@@ -42,7 +53,7 @@ export default function PhoneEmulator({
   onLog
 }: PhoneEmulatorProps) {
   // Navigation internal state inside WeChat
-  const [currentPage, setCurrentPage] = useState<'splash' | 'index' | 'list'>('splash');
+  const [currentPage, setCurrentPage] = useState<'splash' | 'index' | 'list' | 'store' | 'user'>('splash');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cart, setCart] = useState<{ product: Product; quantity: number; spec: string; color: string }[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -57,17 +68,29 @@ export default function PhoneEmulator({
   // WeChat Payment Simulation State
   const [showPayModal, setShowPayModal] = useState(false);
   const [paymentStep, setPaymentStep] = useState<'idle' | 'input' | 'processing' | 'success'>('idle');
+  const [splashLoaded, setSplashLoaded] = useState(false);
 
   // Automatic splash timeout
   useEffect(() => {
     if (currentPage === 'splash') {
+      setSplashLoaded(false);
       onLog('info', 'app.js', '微信小程序/智能框架初起初始化中...');
-      onLog('info', 'page/splash/splash.js', 'Splash 启动页加载完成，等待跳转...');
+      onLog('info', 'page/splash/splash.js', 'Splash 启动页加载中，正在向野兽派后台请求接口数据...');
+      
+      const loadTimer = setTimeout(() => {
+        setSplashLoaded(true);
+        onLog('success', 'page/splash/splash.js', '接口数据加载成功，启动页文字色彩由灰同步全黑');
+      }, 700);
+
       const timer = setTimeout(() => {
         setCurrentPage('index');
         onLog('success', 'app.js', 'Splash 结束，路由重定向[wx.switchTab]至 /pages/index/index');
-      }, 2200);
-      return () => clearTimeout(timer);
+      }, 2400);
+
+      return () => {
+        clearTimeout(loadTimer);
+        clearTimeout(timer);
+      };
     }
   }, [currentPage]);
 
@@ -81,11 +104,18 @@ export default function PhoneEmulator({
   }, [selectedProduct]);
 
   // Fast Tab Switching Logger
-  const handleTabChange = (tab: 'index' | 'list') => {
+  const handleTabChange = (tab: 'index' | 'list' | 'store' | 'user') => {
     if (currentPage === 'splash') return;
     setActiveTab(tab);
     setCurrentPage(tab);
-    onLog('info', 'app.json', `TabBar点击切换: ${tab === 'index' ? '首页(/pages/index/index)' : '分类/选购(/pages/product/list)'}`);
+    
+    let pathInfo = '';
+    if (tab === 'index') pathInfo = '首页(/pages/index/index)';
+    else if (tab === 'list') pathInfo = '分类/选购(/pages/product/list)';
+    else if (tab === 'store') pathInfo = '门店与艺术厅(/pages/store/index)';
+    else if (tab === 'user') pathInfo = '个人中心卡包(/pages/user/index)';
+
+    onLog('info', 'app.json', `TabBar点击切换: ${pathInfo}`);
   };
 
   // Skip splash direct interaction
@@ -203,18 +233,47 @@ export default function PhoneEmulator({
             }}
           >
             {/* Left Back or Home Navigation Icon */}
-            <div className="flex items-center min-w-[60px]">
-              {currentPage === 'list' && (
-                <button 
-                  onClick={() => handleTabChange('index')}
-                  className="flex items-center text-xs space-x-0.5 hover:opacity-75 transition-opacity"
+            <div className="flex items-center w-[80px] shrink-0">
+              {['list', 'store', 'user'].includes(currentPage) && (
+                <div 
+                  className="flex items-center justify-between w-[80px] h-[30px] rounded-full border px-2.5 space-x-1.5 shadow-sm relative shrink-0"
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.85)',
+                    borderColor: 'rgba(0,0,0,0.08)',
+                    color: '#111111'
+                  }}
                 >
-                  <ChevronLeft className="w-5 h-5 shrink-0" />
-                  <span>首页</span>
-                </button>
+                  <button 
+                    onClick={() => {
+                      onLog('info', `page/${currentPage}/${currentPage === 'list' ? 'product/list' : currentPage}.js`, '微信小程序触发 [wx.navigateBack]: 返回上一页');
+                      handleTabChange('index');
+                    }}
+                    className="hover:opacity-75 transition-opacity"
+                  >
+                    <ArrowLeft className="w-4 h-4 shrink-0" />
+                  </button>
+                  <div className="w-[1px] h-4 bg-gray-400/30" />
+                  <button 
+                    onClick={() => {
+                      onLog('info', `page/${currentPage}/${currentPage === 'list' ? 'product/list' : currentPage}.js`, '微信小程序调用 [wx.reLaunch] 返回首页');
+                      handleTabChange('index');
+                    }}
+                    className="hover:opacity-75 transition-opacity"
+                  >
+                    <Home className="w-4 h-4 text-neutral-800 shrink-0" />
+                  </button>
+                </div>
               )}
               {currentPage === 'index' && (
-                <span className="font-serif font-bold text-lg tracking-wider">tbh</span>
+                <button 
+                  onClick={() => {
+                    onLog('info', 'page/index/index.js', '微信小程序调用 [wx.navigateTo] 打开艺术馆全局搜索组件');
+                  }}
+                  className="hover:opacity-75 transition-opacity duration-200 active:scale-95 transform flex items-center justify-center"
+                  aria-label="搜索"
+                >
+                  <Search className="w-5 h-5 shrink-0" />
+                </button>
               )}
               {currentPage === 'splash' && (
                 <span className="text-xs opacity-40 font-mono">BOOTING</span>
@@ -223,7 +282,10 @@ export default function PhoneEmulator({
 
             {/* Current Page WeChat Title bar title */}
             <div className="text-center font-semibold text-sm max-w-[140px] truncate">
-              {currentPage === 'splash' ? '' : currentPage === 'index' ? config.appName : '选购精品'}
+              {currentPage === 'splash' ? '' : 
+               currentPage === 'index' ? config.appName : 
+               currentPage === 'list' ? '选购精品' : 
+               currentPage === 'store' ? '探索门店' : '艺术卡包'}
             </div>
 
             {/* Right Standard WeChat Capsule Button (胶囊按钮) */}
@@ -276,11 +338,12 @@ export default function PhoneEmulator({
                     <motion.div 
                       initial={{ scale: 0.93, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.3, duration: 0.8 }}
+                      transition={{ delay: 0.2, duration: 0.8 }}
                       className="flex items-baseline tracking-[0.25em]"
                     >
-                      <span className="text-5xl font-serif font-black text-black">B</span>
-                      <span className="text-4xl font-serif text-gray-300 ml-1">EAST</span>
+                      <span className={`text-5xl font-serif font-black text-sweep ${splashLoaded ? 'text-sweep-active' : ''}`}>
+                        BEAST
+                      </span>
                     </motion.div>
                     <motion.p 
                       initial={{ opacity: 0 }}
@@ -626,15 +689,196 @@ export default function PhoneEmulator({
                 </motion.div>
               )}
 
+              {/* PAGE 4: STORE SCREEN (store) */}
+              {currentPage === 'store' && (
+                <motion.div
+                  key="store-page"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex-1 flex flex-col bg-neutral-50 p-4"
+                >
+                  <div className="bg-white rounded-xl p-4 border border-neutral-100 shadow-xs mb-4">
+                    <div className="aspect-video w-full rounded-lg bg-neutral-100 overflow-hidden relative mb-4">
+                      <img 
+                        className="w-full h-full object-cover" 
+                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=600&q=80" 
+                        alt="Store interior"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                        <span className="text-white font-serif tracking-[0.2em] text-sm font-semibold">THE BEAST ART LIVING</span>
+                      </div>
+                    </div>
+
+                    <h4 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-1">野兽派高定制艺空间 (上海桃江路店)</h4>
+                    <p className="text-[11px] text-gray-500 leading-relaxed mb-3">
+                      作为野兽派的起点，桃江路旗舰店融花艺、高级香散与特等生活寝具于一堂快享。
+                    </p>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => {
+                          onLog('success', 'store.js', '调用 [wx.makePhoneCall] 拨打桃江路门店预约专线: 021-5432XXXX');
+                          alert('微信电话客服:\n正在唤醒系统拨号面板...\n热线号码: 021-5432XXXX');
+                        }}
+                        className="flex-grow py-1.5 border border-black rounded text-[10px] font-bold flex items-center justify-center space-x-1"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>预约专属艺术管家</span>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          onLog('success', 'store.js', '调用 [wx.openLocation] 开启腾讯地图导航至徐汇区桃江路15号');
+                          alert('微信定位导航:\n正在呼起微信内置腾讯地图组件...\n目的地: 上海市徐汇区桃江路15号');
+                        }}
+                        className="flex-grow py-1.5 bg-black text-white rounded text-[10px] font-bold flex items-center justify-center space-x-1"
+                      >
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>高德/腾讯地图导航</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* List of more locations */}
+                  <span className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider mb-2 block px-1">其它线下高定制艺空间</span>
+                  <div className="space-y-2">
+                    {[
+                      { name: '北京三里屯太古里店', addr: '北京市朝阳区三里屯路19号太古里南区', tag: '经典香氛店' },
+                      { name: '成都远洋太古里概念店', addr: '成都市锦江区中纱帽街8号太古里', tag: '花艺体验馆' },
+                      { name: '深圳万象天地高定制艺馆', addr: '深圳市南山区深南大道9668号', tag: '奢享生活馆' }
+                    ].map((st, i) => (
+                      <div key={i} className="bg-white rounded-lg p-3 border border-neutral-100 flex justify-between items-center">
+                        <div>
+                          <div className="flex items-center space-x-1.5">
+                            <h5 className="text-xs font-bold text-gray-800">{st.name}</h5>
+                            <span className="text-[8px] bg-neutral-100 text-neutral-500 px-1 rounded">{st.tag}</span>
+                          </div>
+                          <p className="text-[10px] text-gray-400 mt-1">{st.addr}</p>
+                        </div>
+                        <button 
+                          onClick={() => {
+                            onLog('success', 'store.js', `调起微信地图并导航至: ${st.name}`);
+                          }}
+                          className="w-7 h-7 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center"
+                        >
+                          <MapPin className="w-4 h-4 text-neutral-700" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* PAGE 5: USER SCREEN (user) */}
+              {currentPage === 'user' && (
+                <motion.div
+                  key="user-page"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex-1 flex flex-col bg-neutral-50 p-4"
+                >
+                  {/* Chic Member Card representation */}
+                  <div className="bg-gradient-to-br from-neutral-900 to-stone-800 text-stone-200 rounded-2xl p-5 shadow-lg relative overflow-hidden mb-4 select-none">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-stone-700/20 rounded-full blur-xl pointer-events-none" />
+                    
+                    <div className="flex justify-between items-start mb-6">
+                      <div>
+                        <span className="text-[10px] tracking-widest font-mono text-stone-400">BEAST BLACK UNIQUE</span>
+                        <h4 className="text-base font-serif font-black tracking-wider text-white mt-1">野兽派高级艺术金卡</h4>
+                      </div>
+                      <Award className="w-6 h-6 text-yellow-500 animate-pulse" />
+                    </div>
+
+                    <div className="flex justify-between items-end mt-4">
+                      <div>
+                        <p className="text-[9px] text-stone-400 font-mono">AUTHORIZED VISITOR ID</p>
+                        <p className="font-mono text-xs text-white tracking-widest">NO. 8881-2290-6611</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-white font-semibold flex items-center justify-center">专享92折特权</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Personal Balances layout */}
+                  <div className="grid grid-cols-3 gap-2 mb-4 text-center select-none">
+                    <div className="bg-white rounded-lg p-3 border border-neutral-100">
+                      <span className="text-xs font-bold text-neutral-900 block">4,280</span>
+                      <p className="text-[9px] text-gray-400 mt-0.5">可用积分</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 border border-neutral-100">
+                      <span className="text-xs font-bold text-neutral-900 block">2张</span>
+                      <p className="text-[9px] text-gray-400 mt-0.5">优惠券</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 border border-neutral-100">
+                      <span className="text-xs font-bold text-emerald-600 block">已授权</span>
+                      <p className="text-[9px] text-gray-400 mt-0.5">微信免登</p>
+                    </div>
+                  </div>
+
+                  {/* Settings / Commands options and support controls */}
+                  <div className="bg-white rounded-xl border border-neutral-100 overflow-hidden divide-y divide-gray-100">
+                    <button 
+                      onClick={() => {
+                        onLog('info', 'user.js', '用户查看「我的高定订单」：拉取顺丰速运物流API接口');
+                        alert(`高定物流跟踪:\n- 今日领券: VIP ¥${config.couponAmount} 专属卡券\n- 暂无未结算账单，请在选购页购买商品！`);
+                      }}
+                      className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-2.5">
+                        <Ticket className="w-4 h-4 text-rose-500" />
+                        <span className="text-xs font-bold text-gray-700">我的高定特权与订单</span>
+                      </div>
+                      <span className="text-[9px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded text-[8px]">SF速递</span>
+                    </button>
+
+                    <button 
+                      onClick={() => {
+                        onLog('info', 'user.js', '呼叫智能微信客服后台：已成功推送快捷交谈对话框');
+                        alert('智能微信客服:\n感谢您致电 tbh 野兽派系列高定生活馆！我们随时通过微信消息回复您。');
+                      }}
+                      className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-2.5">
+                        <MessageSquare className="w-4 h-4 text-blue-500" />
+                        <span className="text-xs font-bold text-gray-700">在线管家与售后服务</span>
+                      </div>
+                      <span className="text-[10px] text-gray-400">9:00 - 22:00</span>
+                    </button>
+
+                    <button 
+                      onClick={() => {
+                        onLog('warn', 'user.js', '微信小程序清除用户缓存并触发 wx.clearStorageSync()');
+                        alert('缓存清理:\n已成功清除本地小程序临时图例、款式规格及会话日志缓存！');
+                      }}
+                      className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-2.5">
+                        <Settings className="w-4 h-4 text-gray-500" />
+                        <span className="text-xs font-bold text-gray-700">授权与权限设置</span>
+                      </div>
+                      <span className="text-xs text-gray-400">&rarr;</span>
+                    </button>
+                  </div>
+
+                  <p className="text-center text-[10px] text-gray-400 mt-6 select-none font-sans uppercase">
+                    tbh the beast home v1.4.2
+                  </p>
+                </motion.div>
+              )}
+
             </AnimatePresence>
           </div>
 
           {/* Persistent Standard WeChat TabBar (固定底部导航栏) */}
           {currentPage !== 'splash' && (
-            <div className="w-full h-[58px] bg-white border-t border-gray-100 flex items-center justify-around z-30 shrink-0 px-4 shadow-[0_-2px_10px_rgba(0,0,0,0.02)] select-none">
+            <div className="w-full h-[58px] bg-white border-t border-gray-100 flex items-center justify-around z-30 shrink-0 px-2 shadow-[0_-2px_10px_rgba(0,0,0,0.02)] select-none">
               <button 
                 onClick={() => handleTabChange('index')}
-                className="flex flex-col items-center justify-center space-y-1 py-1 px-4 cursor-pointer transition-transform duration-100 active:scale-95"
+                className="flex-grow flex flex-col items-center justify-center space-y-1 py-1 cursor-pointer transition-transform duration-100 active:scale-95"
               >
                 <Home className={`w-5 h-5 ${currentPage === 'index' ? 'text-black stroke-[2.5px]' : 'text-neutral-400 stroke-[1.8px]'}`} />
                 <span className={`text-[10px] font-medium leading-none ${currentPage === 'index' ? 'text-black font-semibold' : 'text-neutral-400'}`}>
@@ -644,30 +888,50 @@ export default function PhoneEmulator({
 
               <button 
                 onClick={() => handleTabChange('list')}
-                className="flex flex-col items-center justify-center space-y-1 py-1 px-4 cursor-pointer transition-transform duration-100 active:scale-95"
+                className="flex-grow flex flex-col items-center justify-center space-y-1 py-1 cursor-pointer transition-transform duration-100 active:scale-95"
               >
-                <Grid className={`w-5 h-5 ${currentPage === 'list' ? 'text-black stroke-[2.5px]' : 'text-neutral-400 stroke-[1.8px]'}`} />
+                <Menu className={`w-5 h-5 ${currentPage === 'list' ? 'text-black stroke-[2.5px]' : 'text-neutral-400 stroke-[1.8px]'}`} />
                 <span className={`text-[10px] font-medium leading-none ${currentPage === 'list' ? 'text-black font-semibold' : 'text-neutral-400'}`}>
                   选购
                 </span>
               </button>
 
               <button 
+                onClick={() => handleTabChange('store')}
+                className="flex-grow flex flex-col items-center justify-center space-y-1 py-1 cursor-pointer transition-transform duration-100 active:scale-95"
+              >
+                <Store className={`w-5 h-5 ${currentPage === 'store' ? 'text-black stroke-[2.5px]' : 'text-neutral-400 stroke-[1.8px]'}`} />
+                <span className={`text-[10px] font-medium leading-none ${currentPage === 'store' ? 'text-black font-semibold' : 'text-neutral-400'}`}>
+                  门店
+                </span>
+              </button>
+
+              <button 
                 onClick={() => {
                   setIsCartOpen(true);
-                  onLog('info', 'cart.js', '用户在悬浮菜单中打开了购物车面板');
+                  onLog('info', 'cart.js', '用户在底部TabBar中打开了袋中艺术品列表');
                 }}
-                className="flex flex-col items-center justify-center space-y-1 py-1 px-4 cursor-pointer transition-transform duration-100 active:scale-95 relative"
+                className="flex-grow flex flex-col items-center justify-center space-y-1 py-1 cursor-pointer transition-transform duration-100 active:scale-95 relative"
               >
                 <ShoppingBag className="w-5 h-5 text-neutral-400 stroke-[1.8px]" />
                 <span className="text-[10px] font-medium leading-none text-neutral-400">
                   袋中
                 </span>
                 {cartTotalCount > 0 && (
-                  <span className="absolute top-1 right-2 bg-red-500 text-white font-mono scale-90 text-[10px] w-4.5 h-4.5 flex items-center justify-center rounded-full font-bold">
+                  <span className="absolute top-1 left-1/2 ml-1 bg-red-500 text-white font-mono scale-90 text-[10px] w-4.5 h-4.5 flex items-center justify-center rounded-full font-bold">
                     {cartTotalCount}
                   </span>
                 )}
+              </button>
+
+              <button 
+                onClick={() => handleTabChange('user')}
+                className="flex-grow flex flex-col items-center justify-center space-y-1 py-1 cursor-pointer transition-transform duration-100 active:scale-95"
+              >
+                <User className={`w-5 h-5 ${currentPage === 'user' ? 'text-black stroke-[2.5px]' : 'text-neutral-400 stroke-[1.8px]'}`} />
+                <span className={`text-[10px] font-medium leading-none ${currentPage === 'user' ? 'text-black font-semibold' : 'text-neutral-400'}`}>
+                  我的
+                </span>
               </button>
             </div>
           )}
