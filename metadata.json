@@ -1,0 +1,6 @@
+{
+  "name": "WeChat Mini Program Previewer",
+  "description": "An interactive WeChat Mini Program emulator and developer environment for the BEAST tbh luxury lifestyle store, featuring real-time source code views, active console logs, and visual customization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
