@@ -503,15 +503,148 @@ const checkoutImmediate = () => {
     {
       "path": "pages/product/list",
       "style": {
-        "navigationBarTitleText": "商品列表"
+        "navigationBarTitleText": "选购精品"
+      }
+    },
+    {
+      "path": "pages/store/index",
+      "style": {
+        "navigationBarTitleText": "探索门店"
+      }
+    },
+    {
+      "path": "pages/user/index",
+      "style": {
+        "navigationBarTitleText": "艺术卡包"
       }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "BEAST",
-    "navigationBarBackgroundColor": "#F8F8F8"
+    "navigationBarTitleText": "tbh 野兽派",
+    "navigationBarBackgroundColor": "#FFFFFF"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#000000",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/product/list",
+        "text": "选购"
+      },
+      {
+        "pagePath": "pages/store/index",
+        "text": "门店"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "text": "我的"
+      }
+    ]
   }
 }`
+  },
+  {
+    path: 'src/pages/store/index.vue',
+    name: 'index.vue',
+    language: 'html',
+    content: `<template>
+  <view class="flex flex-col min-h-screen bg-[#f9f9f9] p-4">
+    <!-- Store Card Content -->
+    <view class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-4">
+      <view class="aspect-video w-full rounded-xl bg-gray-100 overflow-hidden relative mb-4">
+        <image 
+          class="w-full h-full object-cover" 
+          src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=600&q=80" 
+          mode="aspectFill"
+        />
+        <view class="absolute inset-0 bg-black/30 flex items-center justify-center">
+          <text class="text-white text-sm font-bold tracking-[0.2em]">THE BEAST ART LIVING</text>
+        </view>
+      </view>
+
+      <text class="text-xs font-bold text-gray-900 uppercase tracking-widest block mb-1">野兽派高定制艺空间 (上海桃江路店)</text>
+      <text class="text-[11px] text-gray-500 leading-relaxed block mb-3">
+        作为野兽派的起点，桃江路旗舰店融花艺、高级香散与特等生活寝具于一堂快享。
+      </text>
+      <view class="flex gap-2">
+        <button 
+          @click="makePhoneCall('021-5432XXXX')"
+          class="flex-1 py-2 border border-black rounded text-[10px] font-bold bg-transparent text-black flex items-center justify-center"
+        >
+          预约专属艺术管家
+        </button>
+        <button 
+          @click="openMap(31.2096, 121.4475, '野兽派上海桃江路店')"
+          class="flex-1 py-1.5 bg-black text-white rounded text-[10px] font-bold flex items-center justify-center"
+        >
+          导航到店
+        </button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+const makePhoneCall = (phoneNumber: string) => {
+  uni.makePhoneCall({ phoneNumber });
+};
+
+const openMap = (latitude: number, longitude: number, name: string) => {
+  uni.openLocation({
+    latitude,
+    longitude,
+    name,
+    address: '上海市徐汇区桃江路15号'
+  });
+};
+<\/script>`
+  },
+  {
+    path: 'src/pages/user/index.vue',
+    name: 'index.vue',
+    language: 'html',
+    content: `<template>
+  <view class="flex flex-col min-h-screen bg-[#f9f9f9] p-4">
+    <!-- Chic Member Card -->
+    <view class="bg-gradient-to-br from-neutral-900 to-stone-880 text-stone-200 rounded-2xl p-5 shadow-lg relative overflow-hidden mb-4">
+      <view class="flex justify-between items-start mb-6">
+        <view>
+          <text class="text-[10px] tracking-widest font-mono text-stone-400 block">BEAST BLACK UNIQUE</text>
+          <text class="text-base font-serif font-black tracking-wider text-white mt-1 block">野兽派高级艺术金卡</text>
+        </view>
+      </view>
+      <view class="flex justify-between items-end mt-4">
+        <view>
+          <text class="text-[9px] text-stone-400 font-mono block">AUTHORIZED VISITOR ID</text>
+          <text class="font-mono text-xs text-white tracking-widest block">NO. 8881-2290-6611</text>
+        </view>
+        <view class="bg-white/10 px-2 py-0.5 rounded">
+          <text class="text-[10px] text-white font-semibold">专享92折特权</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Services -->
+    <view class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <view class="p-4 border-b border-gray-50 flex justify-between" @click="showToast('正在加载高级大客户接口...')">
+        <text class="text-xs font-bold text-gray-700">我的高定特权与订单</text>
+        <text class="text-xs text-neutral-400">SF速递</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+const showToast = (title: string) => {
+  uni.showToast({ title, icon: 'none' });
+};
+<\/script>`
   }
 ];

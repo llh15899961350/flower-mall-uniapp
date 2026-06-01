@@ -1,0 +1,23 @@
+{
+  "name": "beast-uni-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni -p mp-weixin",
+    "dev:h5": "uni",
+    "build:h5": "uni build"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-alpha-4010820240508001",
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.0",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-4010820240508001",
+    "tailwindcss": "^4.0.0",
+    "weapp-tailwindcss": "^4.0.0",
+    "typescript": "^4.9.5",
+    "vite": "^5.2.0"
+  }
+}
