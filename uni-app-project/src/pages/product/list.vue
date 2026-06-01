@@ -1,28 +1,40 @@
 <template>
   <view class="flex flex-col min-h-screen bg-gray-50 pb-12 animate-fade-in">
     <!-- Filter Bar Header -->
-    <view class="flex justify-around items-center bg-white py-3 border-b border-gray-100 sticky top-0 z-10">
-      <text 
-        @tap="changeCategory('全部')" 
-        class="text-xs font-semibold" 
-        :class="currentCategory === '全部' ? 'text-black font-bold border-b-2 border-black pb-1' : 'text-gray-500'"
-      >
-        综合
-      </text>
-      <text 
-        @tap="changeCategory('花艺')" 
-        class="text-xs" 
-        :class="currentCategory === '花艺' ? 'text-black font-bold' : 'text-gray-500'"
-      >
-        新品花艺
-      </text>
-      <view @tap="togglePriceSort" class="flex items-center text-xs text-gray-500">
-        <text :class="priceSort !== 'none' ? 'text-black font-semibold' : ''">价格</text>
-        <text class="text-[10px] ml-0.5">{{ priceSort === 'asc' ? '▲' : priceSort === 'desc' ? '▼' : '⇅' }}</text>
+    <view class="bg-white border-b border-gray-100 sticky top-0 z-10">
+      <view class="flex justify-around items-center py-3">
+        <text 
+          @tap="changeCategory('全部')" 
+          class="text-xs font-semibold" 
+          :class="currentCategory === '全部' ? 'text-black font-bold border-b-2 border-black pb-1' : 'text-gray-400'"
+        >
+          全部
+        </text>
+        <text 
+          v-for="cat in ['花艺', '香氛', '床品', '家居']"
+          :key="cat"
+          @tap="changeCategory(cat)" 
+          class="text-xs" 
+          :class="currentCategory === cat ? 'text-black font-bold border-b-2 border-black pb-1' : 'text-gray-400'"
+        >
+          {{ cat }}
+        </text>
       </view>
-      <view @tap="showFilterModal" class="flex items-center text-xs text-gray-500">
-        <text>筛选</text>
-        <text class="text-[10px] ml-0.5">▽</text>
+
+      <!-- Sub Filter & Sorting -->
+      <view class="flex justify-between items-center px-4 py-2 bg-neutral-50/80 border-t border-gray-100/50 text-[10.5px] text-gray-500">
+        <view class="flex items-center space-x-4">
+          <text 
+            @tap="resetSort" 
+            class="font-medium"
+            :class="priceSort === 'none' ? 'text-black font-bold' : ''"
+          >综合</text>
+          <view @tap="togglePriceSort" class="flex items-center">
+            <text :class="priceSort !== 'none' ? 'text-black font-bold' : ''">价格</text>
+            <text class="text-[9px] ml-0.5 font-mono">{{ priceSort === 'asc' ? '▲' : priceSort === 'desc' ? '▼' : '⇅' }}</text>
+          </view>
+        </view>
+        <text @tap="showFilterModal" class="active:opacity-60">筛选 ▽</text>
       </view>
     </view>
 
@@ -44,7 +56,7 @@
 
         <!-- Product Copy & Purchase Action -->
         <view class="mt-4 flex flex-col">
-          <text class="text-xs text-gray-800 line-clamp-2 min-h-[36px] px-1 leading-relaxed text-center">
+          <text class="text-xs text-gray-800 line-clamp-2 min-h-[36px] px-1 leading-relaxed text-center font-medium">
             {{ item.title }}
           </text>
           <text v-if="item.subtitle" class="text-[9px] text-gray-400 text-center mt-0.5 block truncate">{{ item.subtitle }}</text>
@@ -54,10 +66,16 @@
               <text class="text-xs font-bold text-black font-mono">¥{{ item.price }}</text>
               <text v-if="item.originalPrice" class="text-[9px] text-gray-400 line-through font-mono ml-1">¥{{ item.originalPrice }}</text>
             </view>
-            <view class="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">+</view>
+            <view class="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold font-mono">+</view>
           </view>
         </view>
       </view>
+    </view>
+
+    <!-- Empty State -->
+    <view v-if="filteredProducts.length === 0" class="py-20 text-center text-gray-400 text-xs">
+      <text class="block text-2xl mb-2">📦</text>
+      <text>该分类目前没有上架商品</text>
     </view>
 
     <!-- Detailed Product Bottom Sheet Drawer -->
@@ -67,15 +85,15 @@
         <view class="flex space-x-4 border-b border-gray-100 pb-4 relative">
           <image :src="selectedProduct.image" class="w-20 h-20 bg-gray-50 border border-gray-100 p-1" mode="aspectFit" />
           <view class="flex-grow flex flex-col justify-end">
-            <text class="text-sm font-bold text-gray-900 leading-snug line-clamp-2">{{ selectedProduct.title }}</text>
-            <text class="text-xs font-mono font-bold text-black mt-1.5">¥{{ selectedProduct.price }}</text>
-            <text class="text-[10.5px] text-gray-400 mt-1">已选: {{ selectedColor }} / {{ selectedSpec }}</text>
+            <text class="text-sm font-bold text-gray-900 leading-snug line-clamp-2 text-left block">{{ selectedProduct.title }}</text>
+            <text class="text-xs font-mono font-bold text-black mt-1.5 text-left block">¥{{ selectedProduct.price }}</text>
+            <text class="text-[10.5px] text-gray-400 mt-1 text-left block">已选: {{ selectedColor }} / {{ selectedSpec }}</text>
           </view>
         </view>
 
         <!-- Spec Selections -->
         <view v-if="selectedProduct.colors && selectedProduct.colors.length" class="py-4 border-b border-gray-100">
-          <text class="text-xs text-gray-700 block mb-2 font-medium">款式选择 Choice</text>
+          <text class="text-xs text-gray-700 block mb-2 font-medium text-left">款式选择 Choice</text>
           <view class="flex flex-wrap gap-2">
             <text 
               v-for="color in selectedProduct.colors" 
@@ -90,7 +108,7 @@
         </view>
 
         <view v-if="selectedProduct.specs && selectedProduct.specs.length" class="py-4 border-b border-gray-100">
-          <text class="text-xs text-gray-700 block mb-2 font-medium">规格说明 Dimensions</text>
+          <text class="text-xs text-gray-700 block mb-2 font-medium text-left">规格说明 Dimensions</text>
           <view class="flex flex-wrap gap-2">
             <text 
               v-for="spec in selectedProduct.specs" 
@@ -115,7 +133,7 @@
 
         <!-- Bottom trigger buttons -->
         <view class="flex gap-3 mt-4">
-          <button @tap="addToCart" class="flex-1 py-3 border border-black text-xs font-bold tracking-widest bg-white">加入艺术袋</button>
+          <button @tap="addToCart" class="flex-grow py-3 border border-black text-xs font-bold tracking-widest bg-white">加入艺术袋</button>
           <button @tap="checkoutImmediate" class="flex-grow py-3 bg-black text-white text-xs font-bold tracking-widest">立即结算</button>
         </view>
       </view>
@@ -125,6 +143,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { onShow } from "@dcloudio/uni-app";
 
 interface Product {
   id: number;
@@ -139,7 +158,7 @@ interface Product {
   specs?: string[];
 }
 
-// 联名艺术馆专属8款高定商品清单
+// 联名艺术馆专属本季高定商品清单
 const products = ref<Product[]>([
   {
     id: 1,
@@ -200,6 +219,18 @@ const products = ref<Product[]>([
     description: '采用高支莫代尔纤维，融入天然桑蚕丝细密收口滚边，实现丝滑糯感，透气慵懒随性美。',
     colors: ['浅杏白', '复古藏青'],
     specs: ['莫代尔 + 桑蚕丝镶边']
+  },
+  {
+    id: 6,
+    title: 'Hello Kitty × tbh 野兽派经典沙龙艺术香氛蜡烛-玫瑰',
+    subtitle: 'Aromatic Bougie Premium',
+    price: 360,
+    originalPrice: 390,
+    image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=600&auto=format&fit=crop',
+    category: '香氛',
+    description: '大马士革玫瑰与沉香交融，蜡体温润，持香持久。限定Kitty浮雕玻璃器，值得收藏。',
+    colors: ['莫奈玫瑰味', '荒野木质味'],
+    specs: ['高级天然植物大豆蜡 190g']
   }
 ]);
 
@@ -210,8 +241,29 @@ const selectedColor = ref('');
 const selectedSpec = ref('');
 const buyQuantity = ref(1);
 
+onShow(() => {
+  const activeCategory = uni.getStorageSync('activeCategory');
+  if (activeCategory) {
+    currentCategory.value = activeCategory;
+    uni.removeStorageSync('activeCategory');
+  }
+
+  const selectedProductId = uni.getStorageSync('selectedProductId');
+  if (selectedProductId) {
+    const prod = products.value.find(p => p.id === Number(selectedProductId));
+    if (prod) {
+      viewDetail(prod);
+    }
+    uni.removeStorageSync('selectedProductId');
+  }
+});
+
 const changeCategory = (cat: string) => {
   currentCategory.value = cat;
+};
+
+const resetSort = () => {
+  priceSort.value = 'none';
 };
 
 const togglePriceSort = () => {
@@ -252,7 +304,7 @@ const addToCart = () => {
 const checkoutImmediate = () => {
   uni.showToast({ title: '正在调起微信支付...', icon: 'loading' });
   setTimeout(() => {
-    uni.showToast({ title: '高定商品支付订购成功！', icon: 'success' });
+    uni.showToast({ title: '高定商品订单支付成功！', icon: 'success' });
     selectedProduct.value = null;
   }, 1000);
 };
