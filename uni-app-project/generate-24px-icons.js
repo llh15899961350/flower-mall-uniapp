@@ -90,7 +90,7 @@ const distanceToLine = (px, py, x1, y1, x2, y2) => {
 
   const dx = px - xx;
   const dy = py - yy;
-  return Math.sqrt(dx * dx + dy * dy); // Correct distance formula
+  return Math.sqrt(dx * dx + dy * dy);
 };
 
 const distanceToCircle = (px, py, cx, cy, r) => {
@@ -100,171 +100,148 @@ const distanceToCircle = (px, py, cx, cy, r) => {
   return Math.abs(dist - r);
 };
 
-// ---------------- 1. HOME RENDERER (首页) ----------------
-const homeRenderer = (active) => (x, y) => {
-  const col = active ? [17, 17, 17, 255] : [153, 153, 153, 255];
-  const bg = [0, 0, 0, 0];
-
-  // Roof triangle peak at (11.5, 4), base at y=11
-  const inRoofFill = y >= 4 && y <= 11 && Math.abs(x - 11.5) <= (y - 4) * 1.0;
-  // House Base wall limits
-  const inBodyFill = x >= 5 && x <= 18 && y >= 11 && y <= 19;
-
-  if (active) {
-    if (inRoofFill || inBodyFill) {
-      // Exclude doorway cutout
-      const inDoor = x >= 10 && x <= 13 && y >= 14 && y <= 19;
-      if (inDoor) return bg;
-      return col;
-    }
-  } else {
-    // Normal / Outlines
-    const onRoofLeft = distanceToLine(x, y, 11.5, 4, 4.5, 11) < 1.0;
-    const onRoofRight = distanceToLine(x, y, 11.5, 4, 18.5, 11) < 1.0;
-    const onWallLeft = x >= 4.5 && x <= 5.5 && y >= 11 && y <= 19;
-    const onWallRight = x >= 17.5 && x <= 18.5 && y >= 11 && y <= 19;
-    const onFloor = x >= 5 && x <= 18 && y >= 18.5 && y <= 19.5;
-    const onDoorLeft = x >= 9.5 && x <= 10.5 && y >= 14 && y <= 19;
-    const onDoorRight = x >= 12.5 && x <= 13.5 && y >= 14 && y <= 19;
-    const onDoorTop = y >= 13.5 && y <= 14.5 && x >= 10 && x <= 13;
-
-    if (onRoofLeft || onRoofRight || onWallLeft || onWallRight || onFloor) {
-      if (onFloor && x >= 11 && x <= 12) return bg; // Clear door threshold
-      return col;
-    }
-    if (onDoorLeft || onDoorRight || onDoorTop) {
-      return col;
+// ---------------- Supersampled Rasterization Engine ----------------
+// Performs 16x grid supersampling per subpixel to render gorgeous anti-aliased lines
+const rasterizeVector = (active, getDistance) => (x, y) => {
+  const col = active ? [0, 0, 0] : [153, 153, 153]; // iOS esteric pure luxury black and beautiful soft gray
+  const thickness = active ? 1.05 : 0.85; // Active has a slightly more prominent presence
+  
+  let totalInside = 0;
+  const samples = [0.125, 0.375, 0.625, 0.875];
+  
+  for (let sx = 0; sx < 4; sx++) {
+    for (let sy = 0; sy < 4; sy++) {
+      const px = x + samples[sx];
+      const py = y + samples[sy];
+      if (getDistance(px, py) <= thickness) {
+        totalInside++;
+      }
     }
   }
-  return bg;
+  
+  if (totalInside === 0) {
+    return [0, 0, 0, 0]; // Fully transparent
+  }
+  const alpha = Math.round((totalInside / 16) * 255);
+  return [col[0], col[1], col[2], alpha];
 };
 
-// ---------------- 2. MENU RENDERER (选购 - Grid) ----------------
-const menuRenderer = (active) => (x, y) => {
-  const col = active ? [17, 17, 17, 255] : [153, 153, 153, 255];
-  const bg = [0, 0, 0, 0];
-
-  const blocks = [
-    { x1: 5, x2: 10, y1: 5, y2: 10 },
-    { x1: 13, x2: 18, y1: 5, y2: 10 },
-    { x1: 5, x2: 10, y1: 13, y2: 18 },
-    { x1: 13, x2: 18, y1: 13, y2: 18 }
+// ---------------- 1. HOME RENDERER (首页 - House) ----------------
+const homeRenderer = (active) => rasterizeVector(active, (px, py) => {
+  const segments = [
+    [12.0, 4.0, 4.5, 10.5],   // Left roof
+    [12.0, 4.0, 19.5, 10.5],  // Right roof
+    [4.5, 10.5, 4.5, 18.5],   // Left wall
+    [19.5, 10.5, 19.5, 18.5],  // Right wall
+    [4.5, 18.5, 9.0, 18.5],   // Floor Left
+    [15.0, 18.5, 19.5, 18.5],  // Floor Right
+    [9.0, 14.5, 9.0, 18.5],   // Door Left
+    [15.0, 14.5, 15.0, 18.5],  // Door Right
+    [9.0, 14.5, 15.0, 14.5]    // Door top boundary curve
   ];
-
-  for (const b of blocks) {
-    const isInside = x >= b.x1 && x <= b.x2 && y >= b.y1 && y <= b.y2;
-    if (isInside) {
-      if (active) return col;
-      // Normal: border outlines
-      const isOutline = x <= b.x1 + 0.8 || x >= b.x2 - 0.8 || y <= b.y1 + 0.8 || y >= b.y2 - 0.8;
-      if (isOutline) return col;
-    }
+  
+  let minDist = 999;
+  for (const seg of segments) {
+    const d = distanceToLine(px, py, seg[0], seg[1], seg[2], seg[3]);
+    if (d < minDist) minDist = d;
   }
+  return minDist;
+});
 
-  return bg;
-};
-
-// ---------------- 3. STORE RENDERER (门店) ----------------
-const storeRenderer = (active) => (x, y) => {
-  const col = active ? [17, 17, 17, 255] : [153, 153, 153, 255];
-  const bg = [0, 0, 0, 0];
-
-  // Store layout eave/roof and base wall
-  const inRoof = y >= 6 && y <= 10 && x >= 3 && x <= 20;
-  const inBase = x >= 5 && x <= 18 && y >= 10 && y <= 19;
-
-  if (active) {
-    if (inRoof || inBase) {
-      // Cutouts
-      const inWindow = x >= 12 && x <= 16 && y >= 12 && y <= 15;
-      const inDoor = x >= 7 && x <= 10 && y >= 14 && y <= 19;
-      if (inWindow || inDoor) return bg;
-      return col;
-    }
-  } else {
-    // normal / outlines
-    const onRoofTop = y >= 6 && y <= 7.2 && x >= 3 && x <= 20;
-    const onRoofLeft = distanceToLine(x, y, 3, 10, 5, 6) < 0.9;
-    const onRoofRight = distanceToLine(x, y, 20, 10, 18, 6) < 0.9;
-    const onWallLeft = x >= 4.5 && x <= 5.5 && y >= 10 && y <= 19;
-    const onWallRight = x >= 17.5 && x <= 18.5 && y >= 10 && y <= 19;
-    const onFloor = x >= 5 && x <= 18 && y >= 18.2 && y <= 19.5;
-    const onWindow = (x >= 12 && x <= 16 && (y === 12 || y === 15)) || (y >= 12 && y <= 15 && (x === 12 || x === 16));
-    const onDoor = (x >= 7 && x <= 10 && y === 14) || (y >= 14 && y <= 19 && (x === 7 || x === 10));
-
-    if (onRoofTop || onRoofLeft || onRoofRight || onWallLeft || onWallRight || onFloor || onWindow || onDoor) {
-      return col;
-    }
+// ---------------- 2. MENU RENDERER (选购 - Rounded Triple Lines) ----------------
+const menuRenderer = (active) => rasterizeVector(active, (px, py) => {
+  const segments = [
+    [5.0, 7.5, 19.0, 7.5],     // Line 1
+    [5.0, 12.0, 19.0, 12.0],   // Line 2
+    [5.0, 16.5, 19.0, 16.5]    // Line 3
+  ];
+  
+  let minDist = 999;
+  for (const seg of segments) {
+    const d = distanceToLine(px, py, seg[0], seg[1], seg[2], seg[3]);
+    if (d < minDist) minDist = d;
   }
-  return bg;
-};
+  return minDist;
+});
 
-// ---------------- 4. CART RENDERER (袋中 - Shopping Bag) ----------------
-const cartRenderer = (active) => (x, y) => {
-  const col = active ? [17, 17, 17, 255] : [153, 153, 153, 255];
-  const bg = [0, 0, 0, 0];
-
-  // Bag body x in [5, 18], y in [9, 19]
-  const inBag = x >= 5 && x <= 18 && y >= 9 && y <= 19;
-  // Handle vertical anchors: left-leg is (8, 5..9), right-leg is (15, 5..9). Arc top at (8..15, 4)
-  const isHandleLeft = x >= 7.5 && x <= 8.5 && y >= 5 && y <= 9;
-  const isHandleRight = x >= 14.5 && x <= 15.5 && y >= 5 && y <= 9;
-  const isHandleTop = y >= 3.5 && y <= 4.5 && x >= 8 && x <= 15;
-
-  if (active) {
-    if (inBag) {
-      // Exclude a minimal visual inner circle or heart for beautiful beast style
-      const insideIcon = Math.sqrt((x - 11.5) ** 2 + (y - 14) ** 2) < 2.0;
-      if (insideIcon) return bg;
-      return col;
-    }
-    if (isHandleLeft || isHandleRight || isHandleTop) {
-      return col;
-    }
-  } else {
-    // Normal / Outlines
-    const onBagLeft = x >= 4.5 && x <= 5.5 && y >= 9 && y <= 19;
-    const onBagRight = x >= 17.5 && x <= 18.5 && y >= 9 && y <= 19;
-    const onBagTop = y >= 8.5 && y <= 9.5 && x >= 5 && x <= 18;
-    const onBagBottom = y >= 18.5 && y <= 19.5 && x >= 5 && x <= 18;
-
-    if (onBagLeft || onBagRight || onBagTop || onBagBottom || isHandleLeft || isHandleRight || isHandleTop) {
-      return col;
-    }
+// ---------------- 3. STORE RENDERER (门店 - French Boutique) ----------------
+const storeRenderer = (active) => rasterizeVector(active, (px, py) => {
+  const segments = [
+    [6.0, 5.5, 18.0, 5.5],     // Roof base horizontal
+    [4.0, 9.0, 6.0, 5.5],      // Left roof diagonal
+    [20.0, 9.0, 18.0, 5.5],    // Right roof diagonal
+    [4.0, 9.0, 20.0, 9.0],     // Roof bottom horizontal
+    [8.0, 5.5, 8.0, 9.0],      // Division 1
+    [12.0, 5.5, 12.0, 9.0],    // Division 2
+    [16.0, 5.5, 16.0, 9.0],    // Division 3
+    [5.5, 9.0, 5.5, 18.5],     // Left Wall
+    [18.5, 9.0, 18.5, 18.5],   // Right Wall
+    [5.5, 18.5, 18.5, 18.5],   // Floor line
+    [10.0, 14.0, 10.0, 18.5],  // Inner door left
+    [14.0, 14.0, 14.0, 18.5],  // Inner door right
+    [10.0, 14.0, 14.0, 14.0]   // Inner door top
+  ];
+  
+  let minDist = 999;
+  for (const seg of segments) {
+    const d = distanceToLine(px, py, seg[0], seg[1], seg[2], seg[3]);
+    if (d < minDist) minDist = d;
   }
-  return bg;
-};
+  return minDist;
+});
 
-// ---------------- 5. USER RENDERER (我的 - Profile) ----------------
-const userRenderer = (active) => (x, y) => {
-  const col = active ? [17, 17, 17, 255] : [153, 153, 153, 255];
-  const bg = [0, 0, 0, 0];
-
-  // Head center (11.5, 7.5), r=3.5
-  const headDist = Math.sqrt((x - 11.5) ** 2 + (y - 7.5) ** 2);
-  const isHead = headDist <= 3.8;
-
-  // Shoulder ellipse boundary: ((x - 11.5) / 7) ^ 2 + ((y - 18) / 4) ^ 2 <= 1.0 with y >= 14
-  const shoulderVal = ((x - 11.5) / 7) ** 2 + ((y - 18) / 4) ** 2;
-  const isShoulders = shoulderVal <= 1.0 && y >= 14 && y <= 19;
-
-  if (active) {
-    if (isHead || isShoulders) {
-      return col;
-    }
-  } else {
-    // Normal / Outlines
-    const onHeadOutline = distanceToCircle(x, y, 11.5, 7.5, 3.8) < 0.9;
-    const onShoulderOutline = Math.abs(shoulderVal - 1.0) < 0.18 && y >= 14 && y <= 19;
-    const onShoulderBottom = x >= 5 && x <= 18 && y >= 18.5 && y <= 19.5;
-
-    if (onHeadOutline || onShoulderOutline || onShoulderBottom) {
-      return col;
-    }
+// ---------------- 4. CART RENDERER (口袋袋子 - Premium Purse) ----------------
+const cartRenderer = (active) => rasterizeVector(active, (px, py) => {
+  const segments = [
+    [8.5, 4.8, 8.5, 8.5],      // Handle straight left side
+    [15.5, 4.8, 15.5, 8.5],    // Handle straight right side
+    [8.5, 4.8, 10.0, 3.6],     // Top curve left
+    [10.0, 3.6, 14.0, 3.6],    // Top horizontal cap
+    [14.0, 3.6, 15.5, 4.8],    // Top curve right
+    
+    [5.0, 8.5, 19.0, 8.5],     // Bag top cover outline
+    [5.0, 8.5, 5.0, 16.5],     // Bag left vertical
+    [19.0, 8.5, 19.0, 16.5],    // Bag right vertical
+    [5.0, 16.5, 7.5, 19.0],    // Bottom corner left rounded
+    [19.0, 16.5, 16.5, 19.0],   // Bottom corner right rounded
+    [7.5, 19.0, 16.5, 19.0],    // Bottom floor horizontal
+    
+    [8.5, 11.5, 8.5, 13.0],    // U-pocket left vertical
+    [15.5, 11.5, 15.5, 13.0],   // U-pocket right vertical
+    [8.5, 13.0, 10.5, 14.8],   // U-pocket curve bottom left
+    [10.5, 14.8, 13.5, 14.8],  // U-pocket curve bottom flat
+    [13.5, 14.8, 15.5, 13.0]   // U-pocket curve bottom right
+  ];
+  
+  let minDist = 999;
+  for (const seg of segments) {
+    const d = distanceToLine(px, py, seg[0], seg[1], seg[2], seg[3]);
+    if (d < minDist) minDist = d;
   }
+  return minDist;
+});
 
-  return bg;
-};
+// ---------------- 5. USER RENDERER (我的 - Outline Profile) ----------------
+const userRenderer = (active) => rasterizeVector(active, (px, py) => {
+  // 1. Distance to Head Circle Center at (12.0, 7.5) with radius 3.3
+  const dHead = distanceToCircle(px, py, 12.0, 7.5, 3.3);
+  
+  // 2. Distance to elegant Shoulder curves
+  const shoulderSegments = [
+    [4.5, 18.5, 6.5, 16.2],
+    [6.5, 16.2, 9.0, 14.6],
+    [9.0, 14.6, 15.0, 14.6],
+    [15.0, 14.6, 17.5, 16.2],
+    [17.5, 16.2, 19.5, 18.5]
+  ];
+  
+  let minDist = dHead;
+  for (const seg of shoulderSegments) {
+    const d = distanceToLine(px, py, seg[0], seg[1], seg[2], seg[3]);
+    if (d < minDist) minDist = d;
+  }
+  return minDist;
+});
 
 // Ensure targeted directories are created safely
 const targetDirs = [
