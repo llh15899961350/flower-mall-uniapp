@@ -77,24 +77,45 @@ view, text, image, scroll-view {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes beast-loading-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  42% {
+    background-position: 50% 0;
+  }
+  58% {
+    background-position: 50% 0;
+  }
+  90% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 经典高定启动页「由左向右由灰变黑」渐变过渡动效 */
+/* 经典高定启动页「由左向右由灰变黑、变全灰循环」渐变过渡动效 */
 .text-sweep {
-  background: linear-gradient(to right, #111111 0%, #111111 50%, #e5e5e5 50%, #e5e5e5 100%);
-  background-size: 200% 100%;
+  font-family: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #CCCCCC 0%, #CCCCCC 33%, #111111 50%, #CCCCCC 66%, #CCCCCC 100%);
+  background-size: 300% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  transition: background-position 1500ms cubic-bezier(0.25, 1, 0.5, 1);
+  animation: beast-loading-sweep 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
 }
 
 .text-sweep-active {
-  background-position: 0 0;
+  /* Keeps compatibility with active hooks while preferring loop dynamics */
 }`
   },
   {
@@ -105,25 +126,15 @@ view, text, image, scroll-view {
   <view class="flex items-center justify-center min-h-screen bg-white">
     <!-- BEAST Splash Logo with luxury font-serif spacing and elegant gradient color sweeping -->
     <view class="flex items-baseline tracking-[0.25em]">
-      <text 
-        class="text-4xl font-serif font-black text-sweep"
-        :class="{ 'text-sweep-active': isLoaded }"
-      >BEAST</text>
+      <text class="text-4xl text-sweep">BEAST</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-
-const isLoaded = ref(false);
+import { onMounted } from 'vue';
 
 onMounted(() => {
-  // 模拟当接口数据加载完成时，触发状态改变切换字色，所有文本由左向右渐变过渡到纯黑色
-  setTimeout(() => {
-    isLoaded.value = true;
-  }, 600);
-
   // 启动页展示并等待接口加载后，2.4秒后自动跳转至首页
   setTimeout(() => {
     uni.switchTab({
@@ -131,90 +142,125 @@ onMounted(() => {
     });
   }, 2400);
 });
-<\/script>`
+</script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900&display=swap');
+
+@keyframes beast-loading-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  42% {
+    background-position: 50% 0;
+  }
+  58% {
+    background-position: 50% 0;
+  }
+  90% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+.text-sweep {
+  font-family: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #CCCCCC 0%, #CCCCCC 33%, #111111 50%, #CCCCCC 66%, #CCCCCC 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: beast-loading-sweep 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+</style>`
   },
   {
     path: 'src/pages/index/index.vue',
     name: 'index.vue',
     language: 'html',
     content: `<template>
-  <view class="flex flex-col min-h-screen bg-neutral-50 pb-16">
-    <!-- Hero Header visual with active peach tone -->
-    <view class="relative w-full h-80 bg-[#E7926C] flex flex-col justify-end pt-12">
-      <!-- tbh Brand Header label -->
-      <view class="absolute top-12 left-1/2 -translate-x-1/2 text-white font-black text-5xl tracking-widest opacity-95">
+  <view class="flex flex-col min-h-screen bg-white pb-16">
+    <!-- Hero Header visual with active bedroom background and transparent overlay for custom navigation -->
+    <view class="relative w-full h-[400px] flex flex-col justify-between overflow-hidden">
+      <!-- Ambient Image Background -->
+      <image 
+        class="absolute inset-0 w-full h-full object-cover" 
+        src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80" 
+        mode="aspectFill" 
+      />
+      <!-- Transparent subtle gradient vignette -->
+      <view class="absolute inset-0 bg-black/15 z-0" />
+      
+      <!-- tbh Brand Header label overlaid near the top (below WeChat top notch height) -->
+      <view class="relative z-10 text-center text-white/40 font-sans tracking-[0.2em] font-light text-[40px] uppercase pt-18 select-none leading-none">
         tbh
       </view>
       
-      <!-- Ambient Image Background -->
-      <view class="relative w-full h-full flex items-center justify-center overflow-hidden">
-        <image 
-          class="absolute inset-0 w-full h-full object-cover opacity-80" 
-          src="https://images.unsplash.com/photo-1545239351-ef35f43d514b?auto=format&fit=crop&w=600&q=80" 
-          mode="aspectFill" 
-        />
-        <view class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30 z-0" />
-        
-        <!-- Spokesperson Info Overlay -->
-        <view class="absolute bottom-6 flex flex-col items-center text-center z-10 px-4">
-          <view class="bg-amber-300 text-black font-semibold text-[10px] uppercase tracking-wider px-2 py-0.5 mb-1.5 rounded-[2px]">
-            宋雨琦 | tbh家居品牌代言人
-          </view>
-          <text class="text-xs text-white tracking-widest mt-1 opacity-90 block">
-            「夏日冒险岛」限定家纺系列
-          </text>
-          <text class="text-lg font-bold text-white tracking-widest mt-1 block">
-            Hello Kitty × tbh
-          </text>
-          
-          <button 
-            @tap="goToProducts" 
-            class="mt-4 px-6 py-2 bg-white text-black text-xs font-semibold tracking-widest rounded-none shadow-md active:bg-gray-100"
-          >
-            即刻选购 COLLECTION
-          </button>
+      <!-- Spokesperson Info Overlay & Buy Button -->
+      <view class="relative z-10 flex flex-col items-center text-center px-4 pb-8">
+        <view class="text-[#fac81e] font-semibold text-xs tracking-wider mb-1 px-2.5 py-0.5 shadow-sm">
+          宋雨琦 | tbh家居品牌代言人
         </view>
+        <view class="text-white text-xs tracking-[0.1em] font-sans mb-1 opacity-95">
+          「夏日冒险岛」限定家纺系列
+        </view>
+        <view class="text-white font-bold text-2xl tracking-[0.18em] mb-4">
+          Hello Kitty × tbh
+        </view>
+        
+        <button 
+          @tap="goToProducts" 
+          class="px-8 py-2 bg-white text-black text-xs font-semibold tracking-widest shadow-md border-0 active:opacity-90 inline-block"
+          style="border-radius: 0; outline: none; margin: 0 auto; display: block;"
+        >
+          即刻选购
+        </button>
       </view>
     </view>
 
-    <!-- New Client Register Incentive -->
-    <view class="bg-black text-white py-3 px-4 flex justify-between items-center text-xs">
+    <!-- New Client Register Incentive Banner -->
+    <view class="bg-black text-white py-3.5 px-5 flex justify-between items-center text-xs shrink-0 select-none">
       <view class="flex items-center space-x-1">
-        <text class="text-yellow-300">★</text>
         <text class="tracking-wide">注册领100元新人券大礼包</text>
       </view>
-      <text class="underline font-semibold active:opacity-75" @tap="registerUser">立即领</text>
+      <text class="underline font-semibold active:opacity-75 cursor-pointer" style="text-decoration: underline;" @tap="registerUser">立即注册</text>
     </view>
 
-    <!-- Fast QuickNav Access Icons -->
-    <view class="grid grid-cols-4 gap-4 py-6 px-4 bg-white border-b border-gray-50">
+    <!-- Fast QuickNav Access Icons matching high fidelity screenshot -->
+    <view class="grid grid-cols-4 gap-4 py-8 px-4 bg-white border-b border-gray-50 shrink-0">
       <view class="flex flex-col items-center space-y-1.5 active:opacity-75" @tap="categorySelect('全部')">
-        <view class="w-13 h-13 rounded-full border border-gray-100 flex items-center justify-center bg-gray-50 text-2xl">
+        <view class="w-13 h-13 rounded-full flex items-center justify-center bg-neutral-50/80 border border-neutral-100 shadow-sm text-2xl">
           🎀
         </view>
         <text class="text-[11px] text-gray-700 font-medium">上新</text>
       </view>
       <view class="flex flex-col items-center space-y-1.5 active:opacity-75" @tap="categorySelect('花艺')">
-        <view class="w-13 h-13 rounded-full border border-gray-100 flex items-center justify-center bg-gray-50 text-2xl">
+        <view class="w-13 h-13 rounded-full flex items-center justify-center bg-neutral-50/80 border border-neutral-100 shadow-sm text-2xl">
           🌸
         </view>
-        <text class="text-[11px] text-gray-700 font-medium">花艺</text>
+        <text class="text-[11px] text-gray-700 font-medium">订花</text>
       </view>
-      <view class="flex flex-col items-center space-y-1.5 active:opacity-75" @tap="categorySelect('香氛')">
-        <view class="w-13 h-13 rounded-full border border-gray-100 flex items-center justify-center bg-gray-50 text-2xl">
+      <view class="flex flex-col items-center space-y-1.5 active:opacity-75" @tap="categorySelect('礼物')">
+        <view class="w-13 h-13 rounded-full flex items-center justify-center bg-neutral-50/80 border border-neutral-100 shadow-sm text-2xl">
           🌴
         </view>
-        <text class="text-[11px] text-gray-700 font-medium">香氛</text>
+        <text class="text-[11px] text-gray-700 font-medium">礼物</text>
       </view>
-      <view class="flex flex-col items-center space-y-1.5 active:opacity-75" @tap="categorySelect('床品')">
-        <view class="w-13 h-13 rounded-full border border-gray-100 flex items-center justify-center bg-gray-50 text-2xl">
+      <view class="flex flex-col items-center space-y-1.5 active:opacity-75" @tap="categorySelect('折扣')">
+        <view class="w-13 h-13 rounded-full flex items-center justify-center bg-neutral-50/80 border border-neutral-100 shadow-sm text-2xl">
           🏷️
         </view>
-        <text class="text-[11px] text-gray-700 font-medium font-bold">床品</text>
+        <text class="text-[11px] text-gray-700 font-medium">折扣</text>
       </view>
     </view>
 
-    <!-- Hot Recommendations Grid -->
+    <!-- Hot Recommendations Grid in real screen -->
     <view class="p-4 bg-neutral-50 flex-1">
       <view class="flex items-center justify-between mb-3.5">
         <view class="flex items-baseline space-x-1.5">
@@ -240,8 +286,8 @@ onMounted(() => {
               LIMITED
             </view>
           </view>
-          <view class="p-4 flex justify-between items-center">
-            <view>
+          <view class="p-4 flex justify-between items-center bg-white">
+            <view class="flex-1 flex flex-col items-start bg-white">
               <text class="font-semibold text-xs text-neutral-800 line-clamp-1 block text-left">Hello Kitty × tbh 「我心童真」生日限定花束</text>
               <text class="text-[10px] text-neutral-400 mt-0.5 font-mono tracking-tight block text-left">Classic Floral Romance</text>
             </view>
@@ -261,7 +307,7 @@ onMounted(() => {
               <image class="max-h-full max-w-full" src="https://images.unsplash.com/photo-1577937927133-66ef06acdf18?q=80&w=600&auto=format&fit=crop" mode="aspectFit" />
               <text class="absolute bottom-1 right-1 text-[9px] font-serif font-black bg-black/5 text-black px-1 rounded-xs">tbh</text>
             </view>
-            <view class="mt-2 text-center">
+            <view class="mt-2 flex flex-col items-start bg-white">
               <text class="text-[10px] text-gray-700 line-clamp-1 block text-left">tbh「夏日冒险岛」不锈钢吸管保温杯</text>
               <view class="mt-1 flex items-center space-x-1.5 justify-start">
                 <text class="text-xs font-bold text-black font-mono">¥269</text>
@@ -278,7 +324,7 @@ onMounted(() => {
               <image class="max-h-full max-w-full" src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop" mode="aspectFit" />
               <text class="absolute bottom-1 right-1 text-[9px] font-serif font-black bg-black/5 text-black px-1 rounded-xs">tbh</text>
             </view>
-            <view class="mt-2 text-center">
+            <view class="mt-2 flex flex-col items-start bg-white">
               <text class="text-[10px] text-gray-700 line-clamp-1 block text-left">Hello Kitty × tbh 全棉四件套</text>
               <view class="mt-1 flex items-center space-x-1.5 justify-start">
                 <text class="text-xs font-bold text-black font-mono">¥999</text>
@@ -320,7 +366,7 @@ const viewProductDetail = (id: number) => {
     url: '/pages/product/list'
   });
 };
-</script>`
+<\/script>`
   },
   {
     path: 'src/pages/product/list.vue',

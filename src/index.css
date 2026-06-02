@@ -1,17 +1,39 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900&display=swap');
 
-/* 微信小程序和Web端 经典高定启动页「由左向右由灰变黑」渐变过渡动效 */
+@keyframes beast-loading-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  42% {
+    background-position: 50% 0;
+  }
+  58% {
+    background-position: 50% 0;
+  }
+  90% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* 微信小程序和Web端 经典高定启动页「由左向右由灰变黑、变全灰循环」渐变过渡动效 */
 .text-sweep {
-  background: linear-gradient(to right, #111111 0%, #111111 50%, #e5e5e5 50%, #e5e5e5 100%);
-  background-size: 200% 100%;
+  font-family: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #CCCCCC 0%, #CCCCCC 33%, #111111 50%, #CCCCCC 66%, #CCCCCC 100%);
+  background-size: 300% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  transition: background-position 1500ms cubic-bezier(0.25, 1, 0.5, 1);
+  animation: beast-loading-sweep 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
 }
 
 .text-sweep-active {
-  background-position: 0 0;
+  /* Keeps compatibility with active hooks while preferring loop dynamics */
 }

@@ -223,11 +223,24 @@ export default function PhoneEmulator({
         {/* WeChat Screen Overlay Frame - Phone contents */}
         <div className="w-full h-full flex flex-col bg-[#F8F9FA] relative text-neutral-800 overflow-hidden text-sm">
           
+          {/* iOS Standard Status Bar overlaid over content */}
+          <div 
+            className="absolute top-0 inset-x-0 h-[44px] px-6 flex items-center justify-between text-[11px] font-semibold tracking-tight z-50 pointer-events-none select-none"
+            style={{ color: currentPage === 'index' ? '#FFFFFF' : '#111111' }}
+          >
+            <span className="font-sans">4:24</span>
+            <div className="flex items-center space-x-1">
+              <span className="text-[10px] leading-none">📶</span>
+              <span className="text-[10px] leading-none">📶</span>
+              <span className="text-[12px] leading-none">🔋</span>
+            </div>
+          </div>
+
           {/* Custom WeChat Header & Capsule Menu */}
           <div 
-            className="w-full pt-[46px] pb-2 px-4 flex items-center justify-between z-40 border-b relative shrink-0 transition-colors duration-300"
+            className={currentPage === 'index' ? 'absolute top-0 left-0 w-full pt-[46px] pb-2 px-4 flex items-center justify-between z-44 transition-all duration-300' : 'w-full pt-[46px] pb-2 px-4 flex items-center justify-between z-40 border-b relative shrink-0 transition-all duration-300'}
             style={{
-              backgroundColor: currentPage === 'index' ? config.bannerColor : '#FFFFFF',
+              backgroundColor: currentPage === 'index' ? 'transparent' : '#FFFFFF',
               borderColor: currentPage === 'index' ? 'transparent' : '#F1F3F5',
               color: currentPage === 'index' ? '#FFFFFF' : '#111111'
             }}
@@ -264,37 +277,25 @@ export default function PhoneEmulator({
                   </button>
                 </div>
               )}
-              {currentPage === 'index' && (
-                <button 
-                  onClick={() => {
-                    onLog('info', 'page/index/index.js', '微信小程序调用 [wx.navigateTo] 打开艺术馆全局搜索组件');
-                  }}
-                  className="hover:opacity-75 transition-opacity duration-200 active:scale-95 transform flex items-center justify-center"
-                  aria-label="搜索"
-                >
-                  <Search className="w-5 h-5 shrink-0" />
-                </button>
-              )}
               {currentPage === 'splash' && (
                 <span className="text-xs opacity-40 font-mono">BOOTING</span>
               )}
             </div>
 
-            {/* Current Page WeChat Title bar title */}
-            <div className="text-center font-semibold text-sm max-w-[140px] truncate">
-              {currentPage === 'splash' ? '' : 
-               currentPage === 'index' ? config.appName : 
+            {/* Current Page WeChat Title bar title (Blank if index for raw branding experience) */}
+            <div className="text-center font-semibold text-sm max-w-[140px] truncate select-none">
+              {currentPage === 'splash' || currentPage === 'index' ? '' : 
                currentPage === 'list' ? '选购精品' : 
                currentPage === 'store' ? '探索门店' : '艺术卡包'}
             </div>
 
-            {/* Right Standard WeChat Capsule Button (胶囊按钮) */}
+            {/* Right Standard WeChat Capsule Button (胶囊按钮) - Styled neatly per specifications */}
             <div 
               className="flex items-center justify-between w-[80px] h-[30px] rounded-full border px-2.5 space-x-1.5 shadow-sm relative shrink-0"
               style={{
-                backgroundColor: currentPage === 'index' ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.85)',
-                borderColor: currentPage === 'index' ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.08)',
-                color: currentPage === 'index' ? '#FFFFFF' : '#111111'
+                backgroundColor: 'rgba(255,255,255,0.85)',
+                borderColor: 'rgba(0,0,0,0.08)',
+                color: '#111111'
               }}
             >
               <button 
@@ -384,71 +385,70 @@ export default function PhoneEmulator({
                 >
                   {/* Head-cover Banner visual style inspired by "Hello Kitty x tbh" */}
                   <div 
-                    className="w-full h-[320px] flex flex-col justify-end relative overflow-hidden shrink-0 border-b border-gray-100"
-                    style={{ backgroundColor: config.bannerColor }}
+                    className="w-full h-[400px] flex flex-col justify-between relative overflow-hidden shrink-0"
                   >
                     {/* Ambassador background picture - Simulated illustration using fine Unsplash */}
                     <img 
-                      className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-85" 
-                      src="https://images.unsplash.com/photo-1545239351-ef35f43d514b?auto=format&fit=crop&w=600&q=80" 
+                      className="absolute inset-0 w-full h-full object-cover" 
+                      src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80" 
                       alt="Floral Background decoration"
                       referrerPolicy="no-referrer"
                     />
 
                     {/* Gradient top & bottom for high-contrast reading values */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30 z-0" />
+                    <div className="absolute inset-0 bg-black/15 z-0" />
 
                     {/* Visual Brand Title labels */}
-                    <div className="absolute top-10 left-1/2 -translate-x-1/2 text-center text-white z-10 w-full px-8 pointer-events-none">
-                      <span className="text-4xl font-extrabold tracking-[0.3em] font-sans text-center inline-block">tbh</span>
-                      <p className="text-[9px] tracking-[0.4em] uppercase text-white/70 mt-1">THE BEAST HOME</p>
+                    <div className="relative z-10 text-center text-white/40 font-sans tracking-[0.2em] font-light text-[40px] uppercase pt-18 select-none leading-none">
+                      tbh
                     </div>
 
                     {/* Ambassador Campaign Content Panel */}
-                    <div className="relative z-10 px-6 pb-6 pt-12 flex flex-col items-center text-center text-white">
-                      <div className="bg-amber-300 text-black font-semibold text-[10px] uppercase tracking-wider px-2 py-0.5 mb-1.5 inline-block select-none rounded-[2px]">
-                        {config.ambassadorTitle}
+                    <div className="relative z-10 px-4 pb-8 flex flex-col items-center text-center text-white">
+                      <div className="text-[#fac81e] font-semibold text-xs tracking-wider mb-1 px-2.5 py-0.5 filter drop-shadow-sm select-none">
+                        宋雨琦 | tbh家居品牌代言人
                       </div>
-                      <h4 className="text-xl font-black tracking-widest mt-0.5 leading-snug">
-                        {config.brandSlogan}
-                      </h4>
-                      <p className="text-xs text-white/90 tracking-widest mt-1">
+                      <span className="text-xs text-white tracking-[0.1em] font-sans mb-1 opacity-95">
+                        「夏日冒险岛」限定家纺系列
+                      </span>
+                      <h4 className="text-white font-bold text-2xl tracking-[0.18em] mb-4">
                         Hello Kitty × tbh
-                      </p>
+                      </h4>
 
                       <button 
                         onClick={() => handleTabChange('list')}
-                        className="mt-4 px-7 py-2 bg-white text-black text-xs font-bold tracking-widest hover:bg-neutral-100 transition-colors rounded-none shadow-lg transform hover:scale-105"
+                        className="px-8 py-2 bg-white text-black text-xs font-semibold tracking-widest active:opacity-90 leading-none shadow-md border-none cursor-pointer"
+                        style={{ borderRadius: 0, outline: 'none' }}
                       >
-                        即刻选购 COLLECTION
+                        即刻选购
                       </button>
                     </div>
                   </div>
 
                   {/* Register promotional ribbon / banner */}
-                  <div className="bg-black text-white py-3 px-5 flex justify-between items-center text-xs tracking-wider select-none shrink-0">
-                    <div className="flex items-center space-x-2">
-                      <Sparkle className="w-3.5 h-3.5 text-yellow-300 animate-spin" style={{ animationDuration: '4s' }} />
-                      <span>注册即领 <strong className="text-yellow-300">¥{config.couponAmount}</strong> 新人立折包</span>
+                  <div className="bg-black text-white py-3.5 px-5 flex justify-between items-center text-xs tracking-wider select-none shrink-0">
+                    <div className="flex items-center space-x-1">
+                      <span>注册领100元新人券大礼包</span>
                     </div>
                     <button 
                       onClick={() => {
                         onLog('success', 'user.js', `微信快捷注册成功，专享价值 ¥${config.couponAmount} 的大礼包优惠券已存入微信卡包 [wx.addCard]`);
-                        alert(`恭喜！领券成功\n我们派发了 ¥${config.couponAmount} 的专属联名卡券到您的微信账户中。可直接抵扣床品和香氛类订单。`);
+                        alert(`恭喜！注册成功！\n专享 100元 新人礼包卡券已发放到您的账户。`);
                       }}
-                      className="underline font-bold hover:text-yellow-300 transition-colors"
+                      className="underline font-bold hover:opacity-90 text-[11px] cursor-pointer"
+                      style={{ textDecoration: 'underline' }}
                     >
-                      立即领
+                      立即注册
                     </button>
                   </div>
 
                   {/* Categorical quick actions (Ribbon / Bubbles) */}
-                  <div className="py-6 px-4 bg-white border-b border-gray-100 grid grid-cols-4 gap-2 shrink-0">
+                  <div className="py-8 px-4 bg-white border-b border-gray-50 grid grid-cols-4 gap-2 shrink-0">
                     {[
                       { icon: '🎀', title: '上新', category: '全部', log: '浏览「上新/联名限定」分类' },
-                      { icon: '🌸', title: '花艺', category: '花艺', log: '浏览「精品花卉艺术」分类' },
-                      { icon: '🌴', title: '香氛', category: '香氛', log: '浏览「沙龙香散扩香」分类' },
-                      { icon: '🏷️', title: '生活', category: '家居', log: '浏览「起居室居家/床单」分类' }
+                      { icon: '🌸', title: '订花', category: '花艺', log: '浏览「精品花卉艺术」分类' },
+                      { icon: '🌴', title: '礼物', category: '香氛', log: '浏览「沙龙香散扩香」分类' },
+                      { icon: '🏷️', title: '折扣', category: '家居', log: '浏览「起居室折扣」分类' }
                     ].map((btn, idx) => (
                       <button
                         key={idx}
