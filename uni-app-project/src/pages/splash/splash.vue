@@ -21,7 +21,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900&display=swap');
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/static/fonts/PlayfairDisplay-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
 
 @keyframes logo-loading-sweep {
   0% {
