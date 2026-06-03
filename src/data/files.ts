@@ -126,7 +126,7 @@ view, text, image, scroll-view {
   <view class="flex items-center justify-center min-h-screen bg-white">
     <!-- BEAST Splash Logo with luxury font-serif spacing and elegant gradient color sweeping -->
     <view class="flex items-baseline tracking-[0.25em]">
-      <text class="text-4xl text-sweep">BEAST</text>
+      <text class="text-4xl text-sweep">K-HEI</text>
     </view>
   </view>
 </template>
@@ -145,7 +145,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900&display=swap');
+@font-face {
+  font-family: "Playfair Display";
+  src: url("http://cloud.135006.xyz/fonts/PlayfairDisplay-Black.ttf")
+       format("truetype");
+  font-weight: 900;
+}
 
 @keyframes logo-loading-sweep {
   0% {
@@ -715,38 +720,60 @@ const checkoutImmediate = () => {
       }
     },
     {
+      "path": "pages/care/index",
+      "style": {
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
       "path": "pages/user/index",
       "style": {
-        "navigationBarTitleText": "艺术卡包"
+        "navigationStyle": "custom"
       }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "tbh 野兽派",
-    "navigationBarBackgroundColor": "#FFFFFF"
+    "navigationBarTitleText": "KONGHEI",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#FFFFFF",
+    "enablePullDownRefresh": false
   },
   "tabBar": {
     "color": "#999999",
+    "height": "50px",
     "selectedColor": "#000000",
     "borderStyle": "black",
-    "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home_active.png"
       },
       {
         "pagePath": "pages/product/list",
-        "text": "选购"
+        "text": "选购",
+        "iconPath": "static/tabbar/menu.png",
+        "selectedIconPath": "static/tabbar/menu_active.png"
       },
       {
         "pagePath": "pages/store/index",
-        "text": "门店"
+        "text": "门店",
+        "iconPath": "static/tabbar/store.png",
+        "selectedIconPath": "static/tabbar/store_active.png"
+      },
+      {
+        "pagePath": "pages/care/index",
+        "text": "袋中",
+        "iconPath": "static/tabbar/bag.png",
+        "selectedIconPath": "static/tabbar/bag_active.png"
       },
       {
         "pagePath": "pages/user/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "static/tabbar/user.png",
+        "selectedIconPath": "static/tabbar/user_active.png"
       }
     ]
   }
@@ -813,40 +840,270 @@ const openMap = (latitude: number, longitude: number, name: string) => {
     name: 'index.vue',
     language: 'html',
     content: `<template>
-  <view class="flex flex-col min-h-screen bg-[#f9f9f9] p-4">
-    <!-- Chic Member Card -->
-    <view class="bg-gradient-to-br from-neutral-900 to-stone-880 text-stone-200 rounded-2xl p-5 shadow-lg relative overflow-hidden mb-4">
-      <view class="flex justify-between items-start mb-6">
-        <view>
-          <text class="text-[10px] tracking-widest font-mono text-stone-400 block">BEAST BLACK UNIQUE</text>
-          <text class="text-base font-serif font-black tracking-wider text-white mt-1 block">野兽派高级艺术金卡</text>
-        </view>
-      </view>
-      <view class="flex justify-between items-end mt-4">
-        <view>
-          <text class="text-[9px] text-stone-400 font-mono block">AUTHORIZED VISITOR ID</text>
-          <text class="font-mono text-xs text-white tracking-widest block">NO. 8881-2290-6611</text>
-        </view>
-        <view class="bg-white/10 px-2 py-0.5 rounded">
-          <text class="text-[10px] text-white font-semibold">专享92折特权</text>
-        </view>
+  <view class="flex flex-col min-h-screen bg-white pb-16">
+    <nav-bar title="用户中心" />
+    <!-- Hero Header visual with active bedroom background and transparent overlay for custom navigation -->
+    <view class="relative w-full h-[360px] flex flex-col justify-between overflow-hidden">
+      <!-- Ambient Image Background -->
+      <image class="absolute inset-0 w-full h-full object-cover"
+        src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80"
+        mode="aspectFill" />
+      <!-- Transparent subtle gradient vignette -->
+      <view class="absolute inset-0 bg-black/15 z-0" />
+    </view>
+     <!-- 页面内容 -->
+    <view class="pt-[1300px] px-4">
+      <text class="text-black text-lg">页面内容</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import NavBar from '@/components/nav-bar/index.vue'
+
+<\/script>`
+  },
+  {
+    path: 'src/pages/care/index.vue',
+    name: 'index.vue',
+    language: 'html',
+    content: `<template>
+  <view class="flex flex-col min-h-screen bg-[#F8F9FA] pb-16">
+    <!-- Chic header title -->
+    <view class="p-6 bg-white border-b border-gray-50 shrink-0">
+      <view class="flex items-baseline space-x-1.5">
+        <text class="text-lg font-serif font-bold text-black">BEAST BAG</text>
+        <text class="text-xs text-gray-400 font-mono">/ 购物袋</text>
       </view>
     </view>
+    
+    <!-- Empty State or Item list -->
+    <view class="flex-grow flex flex-col items-center justify-center p-8 text-center bg-white mt-2">
+      <view class="w-20 h-20 rounded-full bg-neutral-50 flex items-center justify-center mb-4 border border-neutral-100">
+        <text class="text-3xl">👜</text>
+      </view>
+      <text class="text-sm font-semibold text-neutral-800">高定艺术购物袋暂空</text>
+      <text class="text-xs text-neutral-400 mt-2 max-w-[200px] leading-relaxed">
+        去选购限定联名系列，开启您的感官艺术之旅
+      </text>
+      
+      <button 
+        @tap="goToProducts" 
+        class="mt-6 px-8 py-2 bg-black text-white text-xs font-semibold tracking-widest active:opacity-90"
+        style="border-radius: 0;"
+      >
+        去选购 COLLECTION
+      </button>
+    </view>
+  </view>
+</template>
 
-    <!-- Services -->
-    <view class="bg-white rounded-xl border border-gray-100 overflow-hidden">
-      <view class="p-4 border-b border-gray-50 flex justify-between" @click="showToast('正在加载高级大客户接口...')">
-        <text class="text-xs font-bold text-gray-700">我的高定特权与订单</text>
-        <text class="text-xs text-neutral-400">SF速递</text>
+<script setup lang="ts">
+const goToProducts = () => {
+  uni.switchTab({
+    url: '/pages/product/list'
+  });
+};
+<\/script>`
+  },
+  {
+    path: 'src/components/nav-bar/index.vue',
+    name: 'index.vue',
+    language: 'html',
+    content: `<template>
+  <view class="nav-bar-container">
+    <!-- Status Bar Spacer (Simulating typical Notch height) -->
+    <view class="status-bar-spacer" />
+    
+    <!-- Header Bar Contents -->
+    <view class="nav-bar-content">
+      <!-- Left Branding: K-HEI with matching text-sweep animation and Playfair Display font -->
+      <view class="nav-bar-left">
+        <text class="logo-title text-sweep">K-HEI</text>
+      </view>
+      
+      <!-- Center Title -->
+      <view class="nav-bar-center">
+      </view>
+      
+      <!-- Right Side WeChat Translucent Glassmorphism Capsule Menu -->
+      <view class="nav-bar-right">
+        <view class="wechat-capsule">
+          <view class="capsule-button capsule-menu">
+            <view class="menu-dot" />
+            <view class="menu-dot" />
+            <view class="menu-dot" />
+          </view>
+          <view class="capsule-divider" />
+          <view class="capsule-button capsule-exit">
+            <view class="exit-circle-outer">
+              <view class="exit-circle-inner" />
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-const showToast = (title: string) => {
-  uni.showToast({ title, icon: 'none' });
-};
-<\/script>`
+<\/script>
+
+<style scoped>
+@font-face {
+  font-family: "Playfair Display";
+  src: url("http://cloud.135006.xyz/fonts/PlayfairDisplay-Black.ttf")
+       format("truetype");
+  font-weight: 900;
+}
+
+.nav-bar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.status-bar-spacer {
+  height: 44px;
+  width: 100%;
+}
+
+.nav-bar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 16px;
+  width: 100%;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.nav-bar-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.logo-title {
+  font-size: 20px;
+  letter-spacing: 0.1em;
+}
+
+.nav-bar-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.nav-bar-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+}
+
+.wechat-capsule {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 84px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0 10px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.capsule-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.capsule-menu {
+  display: flex;
+  gap: 3px;
+  width: 24px;
+}
+
+.menu-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #111111;
+  opacity: 0.9;
+}
+
+.capsule-divider {
+  width: 1px;
+  height: 14px;
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.capsule-exit {
+  width: 24px;
+}
+
+.exit-circle-outer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #111111;
+  border-radius: 50%;
+  opacity: 0.9;
+}
+
+.exit-circle-inner {
+  width: 6px;
+  height: 6px;
+  background-color: #111111;
+  border-radius: 50%;
+}
+
+@keyframes logo-loading-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  80% {
+    background-position: 0% 0;
+  }
+  92% {
+    background-position: 0% 0;
+  }
+  92.1% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.text-sweep {
+  font-family: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #2c2c2c 50%, #dbdbdb 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: logo-loading-sweep 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+</style>`
   }
 ];

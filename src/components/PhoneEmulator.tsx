@@ -226,7 +226,7 @@ export default function PhoneEmulator({
           {/* iOS Standard Status Bar overlaid over content */}
           <div 
             className="absolute top-0 inset-x-0 h-[44px] px-6 flex items-center justify-between text-[11px] font-semibold tracking-tight z-50 pointer-events-none select-none"
-            style={{ color: currentPage === 'index' ? '#FFFFFF' : '#111111' }}
+            style={{ color: (currentPage === 'index' || currentPage === 'user') ? '#FFFFFF' : '#111111' }}
           >
             <span className="font-sans">4:24</span>
             <div className="flex items-center space-x-1">
@@ -238,16 +238,20 @@ export default function PhoneEmulator({
 
           {/* Custom WeChat Header & Capsule Menu */}
           <div 
-            className={currentPage === 'index' ? 'absolute top-0 left-0 w-full pt-[46px] pb-2 px-4 flex items-center justify-between z-44 transition-all duration-300' : 'w-full pt-[46px] pb-2 px-4 flex items-center justify-between z-40 border-b relative shrink-0 transition-all duration-300'}
+            className={(currentPage === 'index' || currentPage === 'user') ? 'absolute top-0 left-0 w-full pt-[46px] pb-2 px-4 flex items-center justify-between z-44 transition-all duration-300' : 'w-full pt-[46px] pb-2 px-4 flex items-center justify-between z-40 border-b relative shrink-0 transition-all duration-300'}
             style={{
-              backgroundColor: currentPage === 'index' ? 'transparent' : '#FFFFFF',
-              borderColor: currentPage === 'index' ? 'transparent' : '#F1F3F5',
-              color: currentPage === 'index' ? '#FFFFFF' : '#111111'
+              backgroundColor: (currentPage === 'index' || currentPage === 'user') ? 'transparent' : '#FFFFFF',
+              borderColor: (currentPage === 'index' || currentPage === 'user') ? 'transparent' : '#F1F3F5',
+              color: (currentPage === 'index' || currentPage === 'user') ? '#FFFFFF' : '#111111'
             }}
           >
-            {/* Left Back or Home Navigation Icon */}
+            {/* Left Back or Home Navigation Icon / Brand Brand Mark */}
             <div className="flex items-center w-[80px] shrink-0">
-              {['list', 'store', 'user'].includes(currentPage) && (
+              {(currentPage === 'index' || currentPage === 'user') ? (
+                <span className="font-serif font-black tracking-[0.1em] text-lg text-sweep uppercase select-none">
+                  K-HEI
+                </span>
+              ) : ['list', 'store'].includes(currentPage) ? (
                 <div 
                   className="flex items-center justify-between w-[80px] h-[30px] rounded-full border px-2.5 space-x-1.5 shadow-sm relative shrink-0"
                   style={{
@@ -276,26 +280,25 @@ export default function PhoneEmulator({
                     <Home className="w-4 h-4 text-neutral-800 shrink-0" />
                   </button>
                 </div>
-              )}
-              {currentPage === 'splash' && (
+              ) : currentPage === 'splash' && (
                 <span className="text-xs opacity-40 font-mono">BOOTING</span>
               )}
             </div>
 
             {/* Current Page WeChat Title bar title (Blank if index for raw branding experience) */}
             <div className="text-center font-semibold text-sm max-w-[140px] truncate select-none">
-              {currentPage === 'splash' || currentPage === 'index' ? '' : 
-               currentPage === 'list' ? '选购精品' : 
-               currentPage === 'store' ? '探索门店' : '艺术卡包'}
+              {(currentPage === 'splash' || currentPage === 'index' || currentPage === 'user') ? '' : 
+               currentPage === 'list' ? '选购精品' : '探索门店'}
             </div>
 
-            {/* Right Standard WeChat Capsule Button (胶囊按钮) - Styled neatly per specifications */}
+            {/* Right Standard WeChat Capsule Button (胶囊按钮) - Styled neatly with glassmorphism for transparent headers */}
             <div 
-              className="flex items-center justify-between w-[80px] h-[30px] rounded-full border px-2.5 space-x-1.5 shadow-sm relative shrink-0"
+              className="flex items-center justify-between w-[80px] h-[30px] rounded-full border px-2.5 space-x-1.5 shadow-sm relative shrink-0 transition-all duration-300"
               style={{
-                backgroundColor: 'rgba(255,255,255,0.85)',
-                borderColor: 'rgba(0,0,0,0.08)',
-                color: '#111111'
+                backgroundColor: (currentPage === 'index' || currentPage === 'user') ? 'rgba(255,255,255,0.32)' : 'rgba(255,255,255,0.85)',
+                borderColor: (currentPage === 'index' || currentPage === 'user') ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.08)',
+                color: (currentPage === 'index' || currentPage === 'user') ? '#FFFFFF' : '#111111',
+                backdropFilter: (currentPage === 'index' || currentPage === 'user') ? 'blur(12px)' : 'none',
               }}
             >
               <button 
@@ -307,7 +310,10 @@ export default function PhoneEmulator({
               >
                 <MoreHorizontal className="w-5 h-5 shrink-0" />
               </button>
-              <div className="w-[1px] h-4 bg-gray-400/30" />
+              <div 
+                className="w-[1px] h-4 transition-colors" 
+                style={{ backgroundColor: (currentPage === 'index' || currentPage === 'user') ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.1)' }}
+              />
               <button 
                 onClick={() => {
                   onLog('warn', 'capsule.api', '微信小程序重载 [wx.reLaunch] 回到启动页');
@@ -315,7 +321,7 @@ export default function PhoneEmulator({
                 }}
                 className="hover:opacity-75 transition-opacity"
               >
-                <Circle className="w-4 h-4 text-rose-500 fill-rose-500 shrink-0" />
+                <Circle className={`w-4 h-4 shrink-0 ${(currentPage === 'index' || currentPage === 'user') ? 'text-white fill-white/80' : 'text-rose-500 fill-rose-500'}`} />
               </button>
             </div>
           </div>
@@ -343,7 +349,7 @@ export default function PhoneEmulator({
                       className="flex items-baseline tracking-[0.25em]"
                     >
                       <span className={`text-5xl font-serif font-black text-sweep ${splashLoaded ? 'text-sweep-active' : ''}`}>
-                        BEAST
+                        K-HEI
                       </span>
                     </motion.div>
                     <motion.p 
@@ -352,7 +358,7 @@ export default function PhoneEmulator({
                       transition={{ delay: 0.8 }}
                       className="text-xs font-mono tracking-widest text-neutral-500"
                     >
-                      THE BEAST HOME &amp; ART LIVING
+                      K-HEI STUDIO COLLECTION
                     </motion.p>
                   </div>
 
@@ -774,99 +780,32 @@ export default function PhoneEmulator({
               {currentPage === 'user' && (
                 <motion.div
                   key="user-page"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.3 }}
-                  className="flex-1 flex flex-col bg-neutral-50 p-4"
+                  className="flex-grow flex flex-col bg-white overflow-y-auto no-scrollbar scroll-smooth"
                 >
-                  {/* Chic Member Card representation */}
-                  <div className="bg-gradient-to-br from-neutral-900 to-stone-800 text-stone-200 rounded-2xl p-5 shadow-lg relative overflow-hidden mb-4 select-none">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-stone-700/20 rounded-full blur-xl pointer-events-none" />
-                    
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <span className="text-[10px] tracking-widest font-mono text-stone-400">BEAST BLACK UNIQUE</span>
-                        <h4 className="text-base font-serif font-black tracking-wider text-white mt-1">野兽派高级艺术金卡</h4>
-                      </div>
-                      <Award className="w-6 h-6 text-yellow-500 animate-pulse" />
-                    </div>
-
-                    <div className="flex justify-between items-end mt-4">
-                      <div>
-                        <p className="text-[9px] text-stone-400 font-mono">AUTHORIZED VISITOR ID</p>
-                        <p className="font-mono text-xs text-white tracking-widest">NO. 8881-2290-6611</p>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-white font-semibold flex items-center justify-center">专享92折特权</span>
-                      </div>
-                    </div>
+                  {/* Hero Header visual with active bedroom background and transparent overlay */}
+                  <div className="relative w-full h-[360px] flex flex-col justify-between overflow-hidden shrink-0">
+                    {/* Ambient Image Background */}
+                    <img 
+                      className="absolute inset-0 w-full h-full object-cover"
+                      src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80"
+                      alt="Cosmo bedroom latte art ambient background"
+                      referrerPolicy="no-referrer"
+                    />
+                    {/* Transparent subtle gradient vignette */}
+                    <div className="absolute inset-0 bg-black/15 z-0" />
                   </div>
 
-                  {/* Personal Balances layout */}
-                  <div className="grid grid-cols-3 gap-2 mb-4 text-center select-none">
-                    <div className="bg-white rounded-lg p-3 border border-neutral-100">
-                      <span className="text-xs font-bold text-neutral-900 block">4,280</span>
-                      <p className="text-[9px] text-gray-400 mt-0.5">可用积分</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-3 border border-neutral-100">
-                      <span className="text-xs font-bold text-neutral-900 block">2张</span>
-                      <p className="text-[9px] text-gray-400 mt-0.5">优惠券</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-3 border border-neutral-100">
-                      <span className="text-xs font-bold text-emerald-600 block">已授权</span>
-                      <p className="text-[9px] text-gray-400 mt-0.5">微信免登</p>
-                    </div>
+                  {/* 页面内容 under huge padding margin for scroll offset test */}
+                  <div className="pt-[1300px] px-6 pb-20 select-none text-center">
+                    <p className="text-black text-lg font-semibold tracking-wider font-serif">页面内容</p>
+                    <p className="text-gray-400 text-xs mt-3 leading-relaxed max-w-[240px] mx-auto">
+                      （滑动浏览更多高定艺术卡圈及限量版特权）
+                    </p>
                   </div>
-
-                  {/* Settings / Commands options and support controls */}
-                  <div className="bg-white rounded-xl border border-neutral-100 overflow-hidden divide-y divide-gray-100">
-                    <button 
-                      onClick={() => {
-                        onLog('info', 'user.js', '用户查看「我的高定订单」：拉取顺丰速运物流API接口');
-                        alert(`高定物流跟踪:\n- 今日领券: VIP ¥${config.couponAmount} 专属卡券\n- 暂无未结算账单，请在选购页购买商品！`);
-                      }}
-                      className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-2.5">
-                        <Ticket className="w-4 h-4 text-rose-500" />
-                        <span className="text-xs font-bold text-gray-700">我的高定特权与订单</span>
-                      </div>
-                      <span className="text-[9px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded text-[8px]">SF速递</span>
-                    </button>
-
-                    <button 
-                      onClick={() => {
-                        onLog('info', 'user.js', '呼叫智能微信客服后台：已成功推送快捷交谈对话框');
-                        alert('智能微信客服:\n感谢您致电 tbh 野兽派系列高定生活馆！我们随时通过微信消息回复您。');
-                      }}
-                      className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-2.5">
-                        <MessageSquare className="w-4 h-4 text-blue-500" />
-                        <span className="text-xs font-bold text-gray-700">在线管家与售后服务</span>
-                      </div>
-                      <span className="text-[10px] text-gray-400">9:00 - 22:00</span>
-                    </button>
-
-                    <button 
-                      onClick={() => {
-                        onLog('warn', 'user.js', '微信小程序清除用户缓存并触发 wx.clearStorageSync()');
-                        alert('缓存清理:\n已成功清除本地小程序临时图例、款式规格及会话日志缓存！');
-                      }}
-                      className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-2.5">
-                        <Settings className="w-4 h-4 text-gray-500" />
-                        <span className="text-xs font-bold text-gray-700">授权与权限设置</span>
-                      </div>
-                      <span className="text-xs text-gray-400">&rarr;</span>
-                    </button>
-                  </div>
-
-                  <p className="text-center text-[10px] text-gray-400 mt-6 select-none font-sans uppercase">
-                    tbh the beast home v1.4.2
-                  </p>
                 </motion.div>
               )}
 

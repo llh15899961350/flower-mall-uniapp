@@ -2,7 +2,7 @@
   <view class="flex items-center justify-center min-h-screen bg-white">
     <!-- BEAST Splash Logo with luxury font-serif spacing and elegant gradient color sweeping -->
     <view class="flex items-baseline tracking-[0.25em]">
-      <text class="text-4xl text-sweep">KONGHEI</text>
+      <text class="text-4xl text-sweep">K-HEI</text>
     </view>
   </view>
 </template>
