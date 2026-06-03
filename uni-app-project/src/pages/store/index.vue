@@ -1,5 +1,5 @@
 <template>
-  <view class="flex flex-col min-h-screen bg-[#f9f9f9] p-4">
+  <view class="flex flex-col min-h-screen bg-[#FFFFFF] p-4">
     <!-- Store Card Content -->
     <view class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-4">
       <view class="aspect-video w-full rounded-xl bg-gray-100 overflow-hidden relative mb-4">

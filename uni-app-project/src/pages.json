@@ -25,46 +25,60 @@
       }
     },
     {
+      "path": "pages/care/index",
+      "style": {
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
       "path": "pages/user/index",
       "style": {
-        "navigationBarTitleText": "艺术卡包"
+        "navigationStyle": "custom"
       }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "tbh 野兽派",
-    "navigationBarBackgroundColor": "#FFFFFF"
+    "navigationBarTitleText": "KONGHEI",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#FFFFFF",
+    "enablePullDownRefresh": false
   },
   "tabBar": {
     "color": "#999999",
+    "height": "50px",
     "selectedColor": "#000000",
-    "borderStyle": "white",
-    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/index/index",
         "text": "首页",
         "iconPath": "static/tabbar/home.png",
-        "selectedIconPath": "static/tabbar/home-active.png"
+        "selectedIconPath": "static/tabbar/home_active.png"
       },
       {
         "pagePath": "pages/product/list",
         "text": "选购",
         "iconPath": "static/tabbar/menu.png",
-        "selectedIconPath": "static/tabbar/menu-active.png"
+        "selectedIconPath": "static/tabbar/menu_active.png"
       },
       {
         "pagePath": "pages/store/index",
         "text": "门店",
         "iconPath": "static/tabbar/store.png",
-        "selectedIconPath": "static/tabbar/store-active.png"
+        "selectedIconPath": "static/tabbar/store_active.png"
+      },
+      {
+        "pagePath": "pages/care/index",
+        "text": "袋中",
+        "iconPath": "static/tabbar/bag.png",
+        "selectedIconPath": "static/tabbar/bag_active.png"
       },
       {
         "pagePath": "pages/user/index",
         "text": "我的",
         "iconPath": "static/tabbar/user.png",
-        "selectedIconPath": "static/tabbar/user-active.png"
+        "selectedIconPath": "static/tabbar/user_active.png"
       }
     ]
   }

@@ -2,7 +2,7 @@
   <view class="flex items-center justify-center min-h-screen bg-white">
     <!-- BEAST Splash Logo with luxury font-serif spacing and elegant gradient color sweeping -->
     <view class="flex items-baseline tracking-[0.25em]">
-      <text class="text-4xl text-sweep">BEAST</text>
+      <text class="text-4xl text-sweep">KONGHEI</text>
     </view>
   </view>
 </template>
@@ -21,7 +21,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900&display=swap');
+@font-face {
+  font-family: "Playfair Display";
+  src: url("http://cloud.135006.xyz/fonts/PlayfairDisplay-Black.ttf")
+       format("truetype");
+  font-weight: 900;
+}
 
 @keyframes logo-loading-sweep {
   0% {

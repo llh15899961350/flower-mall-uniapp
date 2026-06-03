@@ -1,16 +1,27 @@
-import { defineConfig } from 'vite';
-import uni from '@dcloudio/vite-plugin-uni';
-import tailwindcss from '@tailwindcss/vite';
-import { UnifiedViteWeappTailwindcssPlugin as weappTailwind } from 'weapp-tailwindcss/vite';
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import path from 'node:path'
+import tailwindcss from '@tailwindcss/postcss'
+import autoprefixer from 'autoprefixer';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     uni(),
-    tailwindcss(),
-    // Converts unsupported Tailwind classes for mini-program runtimes (WXML)
-    weappTailwind({
-      rem2rpx: true // Support standard rem to rpx conversion for pixel-perfect screens
+    UnifiedViteWeappTailwindcssPlugin({
+      rem2rpx: true,
+      cssEntries: [
+        path.resolve(__dirname, './src/main.css')
+      ]
     })
-  ]
-});
+  ],
+
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss(),
+        autoprefixer()
+      ]
+    }
+  }
+})
