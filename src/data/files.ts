@@ -60,6 +60,34 @@ export default defineConfig({
     content: `/* Support for Tailwind CSS V4.0 @import syntax */
 @import "tailwindcss";
 
+/* 
+ * 1. 经典奢侈品级衬线字体 (Playfair Display) 注册及 CDN 配置
+ * 您只需将下面的 \`url(...)\` 替换为您的 CDN 真实地址即可（例如 https://cdn.xxx.com/PlayfairDisplay-Black.ttf）
+ */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('https://fonts.gstatic.com/s/playfairdisplay/v37/ur4U73o6_gY-76v9Vcf8A_gY.woff2') format('woff2'),
+       url('https://your-cdn-server.com/fonts/PlayfairDisplay-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 
+ * 2. Tailwind v4 theme font-family definition
+ */
+@theme {
+  --font-luxury: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
+}
+
+/* 
+ * 3. 通用易用型字体 CSS 类
+ */
+.font-luxury {
+  font-family: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
+  font-weight: 900;
+}
+
 /* Common resets for wechat mini program container */
 page {
   background-color: #fcfcfc;
@@ -101,8 +129,7 @@ view, text, image, scroll-view {
 
 /* 经典高定启动页「由左向右由灰变黑、变全灰循环」渐变过渡动效 */
 .text-sweep {
-  font-family: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
-  font-weight: 900;
+  @apply font-luxury;
   text-transform: uppercase;
   background: linear-gradient(to right, #2c2c2c 50%, #dbdbdb 50%);
   background-size: 200% 100%;
@@ -126,7 +153,7 @@ view, text, image, scroll-view {
   <view class="flex items-center justify-center min-h-screen bg-white">
     <!-- BEAST Splash Logo with luxury font-serif spacing and elegant gradient color sweeping -->
     <view class="flex items-baseline tracking-[0.25em]">
-      <text class="text-4xl text-sweep">K-HEI</text>
+      <text class="text-4xl text-sweep">BEAST</text>
     </view>
   </view>
 </template>
@@ -145,11 +172,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 
+ * 1. 经典奢侈品级衬线字体 (Playfair Display) 注册及 CDN 配置
+ * 您只需将下面的 'url(...)' 中的 CDN 地址替换为您的真实 CDN 连通网址
+ */
 @font-face {
-  font-family: "Playfair Display";
-  src: url("http://cloud.135006.xyz/fonts/PlayfairDisplay-Black.ttf")
-       format("truetype");
+  font-family: 'Playfair Display';
+  src: url('https://fonts.gstatic.com/s/playfairdisplay/v37/ur4U73o6_gY-76v9Vcf8A_gY.woff2') format('woff2'),
+       url('https://your-cdn-server.com/fonts/PlayfairDisplay-Black.ttf') format('truetype');
   font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @keyframes logo-loading-sweep {
@@ -720,60 +753,44 @@ const checkoutImmediate = () => {
       }
     },
     {
-      "path": "pages/care/index",
+      "path": "pages/user/index",
       "style": {
-        "navigationBarTitleText": "购物车"
+        "navigationBarTitleText": "艺术卡包"
       }
     },
     {
-      "path": "pages/user/index",
+      "path": "pages/search/search",
       "style": {
-        "navigationStyle": "custom"
+        "navigationBarTitleText": "搜索"
       }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "KONGHEI",
-    "navigationBarBackgroundColor": "#FFFFFF",
-    "backgroundColor": "#FFFFFF",
-    "enablePullDownRefresh": false
+    "navigationBarTitleText": "tbh 野兽派",
+    "navigationBarBackgroundColor": "#FFFFFF"
   },
   "tabBar": {
     "color": "#999999",
-    "height": "50px",
     "selectedColor": "#000000",
     "borderStyle": "black",
+    "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "static/tabbar/home.png",
-        "selectedIconPath": "static/tabbar/home_active.png"
+        "text": "首页"
       },
       {
         "pagePath": "pages/product/list",
-        "text": "选购",
-        "iconPath": "static/tabbar/menu.png",
-        "selectedIconPath": "static/tabbar/menu_active.png"
+        "text": "选购"
       },
       {
         "pagePath": "pages/store/index",
-        "text": "门店",
-        "iconPath": "static/tabbar/store.png",
-        "selectedIconPath": "static/tabbar/store_active.png"
-      },
-      {
-        "pagePath": "pages/care/index",
-        "text": "袋中",
-        "iconPath": "static/tabbar/bag.png",
-        "selectedIconPath": "static/tabbar/bag_active.png"
+        "text": "门店"
       },
       {
         "pagePath": "pages/user/index",
-        "text": "我的",
-        "iconPath": "static/tabbar/user.png",
-        "selectedIconPath": "static/tabbar/user_active.png"
+        "text": "我的"
       }
     ]
   }
@@ -840,270 +857,232 @@ const openMap = (latitude: number, longitude: number, name: string) => {
     name: 'index.vue',
     language: 'html',
     content: `<template>
-  <view class="flex flex-col min-h-screen bg-white pb-16">
-    <nav-bar title="用户中心" />
-    <!-- Hero Header visual with active bedroom background and transparent overlay for custom navigation -->
-    <view class="relative w-full h-[360px] flex flex-col justify-between overflow-hidden">
-      <!-- Ambient Image Background -->
-      <image class="absolute inset-0 w-full h-full object-cover"
-        src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80"
-        mode="aspectFill" />
-      <!-- Transparent subtle gradient vignette -->
-      <view class="absolute inset-0 bg-black/15 z-0" />
+  <view class="flex flex-col min-h-screen bg-[#f9f9f9] p-4">
+    <!-- Chic Member Card -->
+    <view class="bg-gradient-to-br from-neutral-900 to-stone-880 text-stone-200 rounded-2xl p-5 shadow-lg relative overflow-hidden mb-4">
+      <view class="flex justify-between items-start mb-6">
+        <view>
+          <text class="text-[10px] tracking-widest font-mono text-stone-400 block">BEAST BLACK UNIQUE</text>
+          <text class="text-base font-serif font-black tracking-wider text-white mt-1 block">野兽派高级艺术金卡</text>
+        </view>
+      </view>
+      <view class="flex justify-between items-end mt-4">
+        <view>
+          <text class="text-[9px] text-stone-400 font-mono block">AUTHORIZED VISITOR ID</text>
+          <text class="font-mono text-xs text-white tracking-widest block">NO. 8881-2290-6611</text>
+        </view>
+        <view class="bg-white/10 px-2 py-0.5 rounded">
+          <text class="text-[10px] text-white font-semibold">专享92折特权</text>
+        </view>
+      </view>
     </view>
-     <!-- 页面内容 -->
-    <view class="pt-[1300px] px-4">
-      <text class="text-black text-lg">页面内容</text>
+
+    <!-- Services -->
+    <view class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <view class="p-4 border-b border-gray-50 flex justify-between" @click="showToast('正在加载高级大客户接口...')">
+        <text class="text-xs font-bold text-gray-700">我的高定特权与订单</text>
+        <text class="text-xs text-neutral-400">SF速递</text>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import NavBar from '@/components/nav-bar/index.vue'
-
+const showToast = (title: string) => {
+  uni.showToast({ title, icon: 'none' });
+};
 <\/script>`
   },
   {
-    path: 'src/pages/care/index.vue',
-    name: 'index.vue',
+    path: 'src/pages/search/search.vue',
+    name: 'search.vue',
     language: 'html',
     content: `<template>
-  <view class="flex flex-col min-h-screen bg-[#F8F9FA] pb-16">
-    <!-- Chic header title -->
-    <view class="p-6 bg-white border-b border-gray-50 shrink-0">
-      <view class="flex items-baseline space-x-1.5">
-        <text class="text-lg font-serif font-bold text-black">BEAST BAG</text>
-        <text class="text-xs text-gray-400 font-mono">/ 购物袋</text>
+  <view class="flex flex-col min-h-screen bg-white">
+    <!-- Search Input Block -->
+    <view class="p-4 bg-white flex flex-col">
+      <view class="relative mb-6">
+        <text class="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 font-mono">🔍</text>
+        <input 
+          type="text" 
+          v-model="searchQuery" 
+          placeholder="搜索全网商品"
+          class="w-full h-10 pl-9 pr-9 bg-[#fbfbfb] rounded-lg text-xs font-medium text-neutral-800 placeholder-neutral-400 border border-neutral-100 focus:bg-white focus:border-neutral-300 font-sans"
+          @confirm="onSearchTrigger"
+        />
+        <text 
+          v-if="searchQuery" 
+          @tap="clearSearch"
+          class="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 text-sm font-bold cursor-pointer"
+        >×</text>
       </view>
-    </view>
-    
-    <!-- Empty State or Item list -->
-    <view class="flex-grow flex flex-col items-center justify-center p-8 text-center bg-white mt-2">
-      <view class="w-20 h-20 rounded-full bg-neutral-50 flex items-center justify-center mb-4 border border-neutral-100">
-        <text class="text-3xl">👜</text>
+
+      <!-- Search Discovery -->
+      <view v-if="!searchQuery" class="flex flex-col">
+        <text class="text-[11px] font-bold tracking-wider text-neutral-400 uppercase block mb-3 text-left">搜索发现</text>
+        <view class="flex flex-wrap gap-2.5">
+          <view 
+            v-for="(tag, idx) in hotTags" 
+            :key="idx"
+            @tap="applyHotTag(tag.matches)"
+            class="px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all active:scale-95 cursor-pointer"
+            :style="{
+              borderColor: tag.colorHex ? '#F4DFD4' : '#F1F3F5',
+              color: tag.colorHex || '#2C2C2C',
+              backgroundColor: tag.colorHex ? '#FDFBF7' : '#FFFFFF'
+            }"
+          >
+            {{ tag.text }}
+          </view>
+        </view>
       </view>
-      <text class="text-sm font-semibold text-neutral-800">高定艺术购物袋暂空</text>
-      <text class="text-xs text-neutral-400 mt-2 max-w-[200px] leading-relaxed">
-        去选购限定联名系列，开启您的感官艺术之旅
-      </text>
-      
-      <button 
-        @tap="goToProducts" 
-        class="mt-6 px-8 py-2 bg-black text-white text-xs font-semibold tracking-widest active:opacity-90"
-        style="border-radius: 0;"
-      >
-        去选购 COLLECTION
-      </button>
+
+      <!-- Search Results -->
+      <view v-else class="flex flex-col">
+        <view class="flex items-center justify-between text-[10px] text-neutral-400 font-bold tracking-wider uppercase mb-3">
+          <text>包含 &ldquo;{{ searchQuery }}&rdquo; 的商品</text>
+          <text @tap="clearSearch" class="font-semibold text-neutral-500 active:text-black">清除</text>
+        </view>
+
+        <view v-if="matchedProducts.length === 0" class="py-20 text-center text-neutral-400">
+          <text class="block text-2xl mb-2">🔍</text>
+          <text class="text-xs font-medium">未找到相关的野兽派奢品</text>
+        </view>
+
+        <view v-else class="flex flex-col space-y-3 pb-4">
+          <view 
+            v-for="prod in matchedProducts" 
+            :key="prod.id"
+            @tap="viewDetail(prod)"
+            class="flex space-x-3 bg-neutral-50/50 p-2.5 rounded-lg border border-neutral-100 cursor-pointer"
+          >
+            <view class="w-16 h-16 rounded-md bg-white border border-neutral-100 flex items-center justify-center p-1 shrink-0 overflow-hidden">
+              <image :src="prod.image" class="max-h-full max-w-full" mode="aspectFit" />
+            </view>
+            <view class="flex-grow flex flex-col justify-between py-0.5">
+              <view>
+                <text class="text-xs font-semibold text-neutral-800 line-clamp-1 block text-left">{{ prod.title }}</text>
+                <text class="text-[10px] text-neutral-400 mt-0.5 line-clamp-1 block text-left">{{ prod.subtitle }}</text>
+              </view>
+              <view class="flex justify-between items-baseline">
+                <text class="text-xs font-bold text-neutral-900 font-mono">¥{{ prod.price }}</text>
+                <text class="text-[9px] bg-neutral-100 text-neutral-500 px-1.5 py-0.5 rounded">{{ prod.category }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-const goToProducts = () => {
+import { ref, computed } from 'vue';
+
+interface Product {
+  id: number;
+  title: string;
+  subtitle?: string;
+  price: number;
+  image: string;
+  category: string;
+  description: string;
+}
+
+interface HotTag {
+  text: string;
+  colorHex?: string;
+  matches: string;
+}
+
+const searchQuery = ref<string>('');
+
+const hotTags = ref<HotTag[]>([
+  { text: "黑皮Kitty系列", colorHex: "#E7926C", matches: "Kitty" },
+  { text: "端午节限定", colorHex: "#E7926C", matches: "限定" },
+  { text: "杯子", matches: "杯" },
+  { text: "拖鞋", matches: "拖鞋" },
+  { text: "睡衣", matches: "睡衣" },
+  { text: "Hello Kitty", matches: "Hello Kitty" }
+]);
+
+const products = ref<Product[]>([
+  {
+    id: 1,
+    title: 'Hello Kitty × tbh 「我心童真」生日限定花束',
+    subtitle: 'Classic Floral Romance',
+    price: 1680,
+    image: 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?q=80&w=600&auto=format&fit=crop',
+    category: '花艺',
+    description: '野兽派精选「我心童真」联名款花束。'
+  },
+  {
+    id: 2,
+    title: 'Hello Kitty × tbh 「我心童真」生日限定花桶-小号',
+    subtitle: 'Tabletop Blossom Box',
+    price: 2280,
+    image: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=600&auto=format&fit=crop',
+    category: '花艺',
+    description: '采用野兽派标志性的圆柱高定皮质花桶'
+  },
+  {
+    id: 3,
+    title: 'tbh「夏日冒险岛」不锈钢吸管保温杯 (含mini包挂件)',
+    subtitle: 'Adventure Tumbler',
+    price: 269,
+    image: 'https://images.unsplash.com/photo-1577937927133-66ef06acdf18?q=80&w=600&auto=format&fit=crop',
+    category: '家居',
+    description: '双层食品级304不锈钢抽真空设计'
+  },
+  {
+    id: 4,
+    title: 'Hello Kitty × tbh 全棉高密缎纹印花四件套-黄色豹纹',
+    subtitle: 'Sateen Bedding Sheet Set',
+    price: 999,
+    image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop',
+    category: '床品',
+    description: '100%长绒棉，80支五枚缎纹'
+  },
+  {
+    id: 5,
+    title: 'tbh 莫代尔经典真丝镶边家居睡衣套装',
+    subtitle: 'Silk-Trim Lounge Pajamas',
+    price: 590,
+    image: 'https://images.unsplash.com/photo-1598121696010-039d6406028d?q=80&w=600&auto=format&fit=crop',
+    category: '家居',
+    description: '采用高支莫代尔纤维，并融入天然桑蚕丝细密收口滚边'
+  }
+]);
+
+const matchedProducts = computed<Product[]>(() => {
+  if (!searchQuery.value) return [];
+  const query = searchQuery.value.toLowerCase().trim();
+  return products.value.filter(p => 
+    p.title.toLowerCase().includes(query) ||
+    p.category.toLowerCase().includes(query) ||
+    (p.subtitle && p.subtitle.toLowerCase().includes(query))
+  );
+});
+
+const onSearchTrigger = () => {
+  uni.showToast({ title: '已执行精品智检搜索', icon: 'none' });
+};
+
+const clearSearch = () => {
+  searchQuery.value = '';
+};
+
+const applyHotTag = (matches: string) => {
+  searchQuery.value = matches;
+};
+
+const viewDetail = (prod: Product) => {
+  uni.setStorageSync('selectedProductId', prod.id);
   uni.switchTab({
     url: '/pages/product/list'
   });
 };
 <\/script>`
-  },
-  {
-    path: 'src/components/nav-bar/index.vue',
-    name: 'index.vue',
-    language: 'html',
-    content: `<template>
-  <view class="nav-bar-container">
-    <!-- Status Bar Spacer (Simulating typical Notch height) -->
-    <view class="status-bar-spacer" />
-    
-    <!-- Header Bar Contents -->
-    <view class="nav-bar-content">
-      <!-- Left Branding: K-HEI with matching text-sweep animation and Playfair Display font -->
-      <view class="nav-bar-left">
-        <text class="logo-title text-sweep">K-HEI</text>
-      </view>
-      
-      <!-- Center Title -->
-      <view class="nav-bar-center">
-      </view>
-      
-      <!-- Right Side WeChat Translucent Glassmorphism Capsule Menu -->
-      <view class="nav-bar-right">
-        <view class="wechat-capsule">
-          <view class="capsule-button capsule-menu">
-            <view class="menu-dot" />
-            <view class="menu-dot" />
-            <view class="menu-dot" />
-          </view>
-          <view class="capsule-divider" />
-          <view class="capsule-button capsule-exit">
-            <view class="exit-circle-outer">
-              <view class="exit-circle-inner" />
-            </view>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
-</template>
-
-<script setup lang="ts">
-<\/script>
-
-<style scoped>
-@font-face {
-  font-family: "Playfair Display";
-  src: url("http://cloud.135006.xyz/fonts/PlayfairDisplay-Black.ttf")
-       format("truetype");
-  font-weight: 900;
-}
-
-.nav-bar-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 999;
-  background-color: transparent;
-  pointer-events: none;
-}
-
-.status-bar-spacer {
-  height: 44px;
-  width: 100%;
-}
-
-.nav-bar-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 48px;
-  padding: 0 16px;
-  width: 100%;
-  box-sizing: border-box;
-  pointer-events: auto;
-}
-
-.nav-bar-left {
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.logo-title {
-  font-size: 20px;
-  letter-spacing: 0.1em;
-}
-
-.nav-bar-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-}
-
-.nav-bar-right {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex: 1;
-}
-
-.wechat-capsule {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 84px;
-  height: 32px;
-  border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.32);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 0 10px;
-  box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.capsule-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.capsule-menu {
-  display: flex;
-  gap: 3px;
-  width: 24px;
-}
-
-.menu-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: #111111;
-  opacity: 0.9;
-}
-
-.capsule-divider {
-  width: 1px;
-  height: 14px;
-  background-color: rgba(0, 0, 0, 0.12);
-}
-
-.capsule-exit {
-  width: 24px;
-}
-
-.exit-circle-outer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 15px;
-  height: 15px;
-  border: 1.5px solid #111111;
-  border-radius: 50%;
-  opacity: 0.9;
-}
-
-.exit-circle-inner {
-  width: 6px;
-  height: 6px;
-  background-color: #111111;
-  border-radius: 50%;
-}
-
-@keyframes logo-loading-sweep {
-  0% {
-    background-position: 100% 0;
-  }
-  80% {
-    background-position: 0% 0;
-  }
-  92% {
-    background-position: 0% 0;
-  }
-  92.1% {
-    background-position: 100% 0;
-  }
-  100% {
-    background-position: 100% 0;
-  }
-}
-
-.text-sweep {
-  font-family: "Playfair Display", Didot, "Didot LT Pro", "Hoefler Text", "Times New Roman", serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  background: linear-gradient(to right, #2c2c2c 50%, #dbdbdb 50%);
-  background-size: 200% 100%;
-  background-position: 100% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: logo-loading-sweep 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-}
-</style>`
   }
 ];

@@ -2,7 +2,7 @@
   <view class="flex items-center justify-center min-h-screen bg-white">
     <!-- BEAST Splash Logo with luxury font-serif spacing and elegant gradient color sweeping -->
     <view class="flex items-baseline tracking-[0.25em]">
-      <text class="text-4xl text-sweep">K-HEI</text>
+      <text class="text-4xl text-sweep">BEAST</text>
     </view>
   </view>
 </template>
@@ -21,11 +21,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 
+ * 1. 经典奢侈品级衬线字体 (Playfair Display) 注册及 CDN 配置
+ * 您只需将下面的 `url(...)` 中的 CDN 地址替换为您的真实 CDN 连通网址
+ */
 @font-face {
-  font-family: "Playfair Display";
-  src: url("http://cloud.135006.xyz/fonts/PlayfairDisplay-Black.ttf")
-       format("truetype");
+  font-family: 'Playfair Display';
+  src: url('https://fonts.gstatic.com/s/playfairdisplay/v37/ur4U73o6_gY-76v9Vcf8A_gY.woff2') format('woff2'),
+       url('https://your-cdn-server.com/fonts/PlayfairDisplay-Black.ttf') format('truetype');
   font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @keyframes logo-loading-sweep {
