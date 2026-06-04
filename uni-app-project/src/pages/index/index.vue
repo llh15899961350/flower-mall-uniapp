@@ -1,5 +1,24 @@
 <template>
   <view class="flex flex-col min-h-screen bg-white pb-16">
+    <!-- Custom Navigation Bar overlay for home screen index page -->
+    <view class="fixed left-0 right-0 top-0 z-50 flex flex-col" style="pointer-events: none;">
+      <!-- Status bar height placeholder -->
+      <view :style="{ height: statusBarHeight + 'px' }"></view>
+      <!-- Custom nav title bar row layout -->
+      <view class="flex items-center justify-between px-4" :style="{ height: navBarHeight + 'px' }">
+        <!-- Search icon square button aligned to the left of navigation bar -->
+        <view 
+          @tap="goToSearch" 
+          class="w-[30px] h-[30px] flex items-center justify-center border bg-white/15 border-white/20 active:scale-95 transition-all cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+          style="pointer-events: auto;"
+        >
+          <text class="text-white text-xs select-none">🔍</text>
+        </view>
+        <!-- Center of bar remains empty so that branding and background flow cleanly -->
+        <view class="flex-1"></view>
+      </view>
+    </view>
+
     <!-- Hero Header visual with active bedroom background and transparent overlay for custom navigation -->
     <view class="relative w-full h-[400px] flex flex-col justify-between overflow-hidden">
       <!-- Ambient Image Background -->
@@ -153,6 +172,28 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
+const statusBarHeight = ref<number>(44);
+const navBarHeight = ref<number>(44);
+
+onMounted(() => {
+  try {
+    const sysInfo = uni.getSystemInfoSync();
+    if (sysInfo.statusBarHeight) {
+      statusBarHeight.value = sysInfo.statusBarHeight;
+    }
+  } catch (e) {
+    // Graceful fallback of standard status bar heights
+  }
+});
+
+const goToSearch = () => {
+  uni.navigateTo({
+    url: '/pages/search/search'
+  });
+};
+
 const goToProducts = () => {
   uni.switchTab({
     url: '/pages/product/list'

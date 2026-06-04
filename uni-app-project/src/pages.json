@@ -29,6 +29,12 @@
       "style": {
         "navigationBarTitleText": "艺术卡包"
       }
+    },
+    {
+      "path": "pages/search/search",
+      "style": {
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {
