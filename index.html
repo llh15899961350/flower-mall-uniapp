@@ -1,13 +1,323 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+    <title>tbh 野兽派家居 | Hello Kitty 联名首发</title>
+    <script>
+      var coverSupport = 'CSS' in window && 'supports' in window.CSS && window.CSS.supports('top: var(--value)');
+      let metaEl = document.createElement('meta');
+      metaEl.setAttribute('name', 'viewport');
+      metaEl.setAttribute('content', 'width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : ''));
+      document.write(metaEl.outerHTML);
+    </script>
+    <!-- Elegant Luxury Google Typography linking -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap">
+    <style>
+      /* Mobile and default responsive fallback styling */
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        overflow-x: hidden;
+      }
+
+      #app {
+        width: 100%;
+        height: 100%;
+      }
+
+      .h5-emulator-container {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .iphone-bezel {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .dynamic-island, .ios-status-bar, .wechat-menu-capsule {
+        display: none; /* Only show these mockup details on desktop frames */
+      }
+
+      /* Desktop mockup wrapping screen framework */
+      @media (min-width: 768px) {
+        html, body {
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+          background-color: #09090b;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .h5-emulator-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100vw;
+          height: 100vh;
+          background-color: #0c0a09;
+          background-image: 
+            radial-gradient(rgba(231,146,108,0.06) 1px, transparent 1px),
+            radial-gradient(rgba(231,146,108,0.03) 1px, transparent 1px);
+          background-size: 32px 32px;
+          background-position: 0 0, 16px 16px;
+        }
+
+        .iphone-bezel {
+          display: block;
+          position: relative;
+          width: 390px;
+          height: 812px;
+          border-radius: 56px;
+          background-color: #ffffff;
+          box-shadow: 
+            0 0 0 12px #262626,
+            0 0 0 14px #1c1917,
+            0 20px 50px rgba(0, 0, 0, 0.8),
+            0 4px 12px rgba(231,146,108,0.1);
+          overflow: hidden;
+          animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        #app {
+          width: 390px;
+          height: 812px;
+          border-radius: 44px;
+          overflow: hidden;
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-color: #ffffff;
+        }
+
+        /* Dynamic Island camera notch */
+        .dynamic-island {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: absolute;
+          top: 11px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 110px;
+          height: 28px;
+          background-color: #000000;
+          border-radius: 20px;
+          z-index: 10000;
+          padding: 0 14px;
+          box-sizing: border-box;
+          pointer-events: none;
+        }
+
+        .dynamic-island .camera {
+          width: 13px;
+          height: 13px;
+          border-radius: 50%;
+          background-color: #0f172a;
+          border: 1px solid #334155;
+          position: relative;
+        }
+        
+        .dynamic-island .camera::after {
+          content: '';
+          position: absolute;
+          top: 3px;
+          left: 3px;
+          width: 3.5px;
+          height: 3.5px;
+          border-radius: 50%;
+          background-color: #581c87;
+          opacity: 0.85;
+        }
+
+        .dynamic-island .sensor {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background-color: #0c0a09;
+        }
+
+        /* Standard top high-precision status bar UI elements */
+        .ios-status-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 44px;
+          padding: 0 28px;
+          box-sizing: border-box;
+          font-size: 11.5px;
+          font-weight: 500;
+          z-index: 9999;
+          pointer-events: none;
+          color: #000000;
+          transition: color 0.3s ease;
+        }
+
+        .ios-icons {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 10px;
+        }
+
+        /* Elegant WeChat Action Capsule mock */
+        .wechat-menu-capsule {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: absolute;
+          top: 48px;
+          right: 18px;
+          width: 82px;
+          height: 30px;
+          border-radius: 100px;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          background-color: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(8px);
+          z-index: 9998;
+          padding: 0 11px;
+          box-sizing: border-box;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+          transition: all 0.25s ease;
+        }
+        
+        .wechat-menu-capsule:hover {
+          background-color: rgba(255, 255, 255, 0.95);
+          border-color: rgba(0, 0, 0, 0.15);
+        }
+
+        .wechat-menu-capsule .capsule-more {
+          font-weight: 700;
+          color: #111111;
+          font-size: 14px;
+          letter-spacing: -0.5px;
+          line-height: 1px;
+          cursor: pointer;
+        }
+
+        .wechat-menu-capsule .capsule-line {
+          width: 1px;
+          height: 12px;
+          background-color: rgba(0,0,0,0.12);
+        }
+
+        .wechat-menu-capsule .capsule-close {
+          width: 11px;
+          height: 11px;
+          border-radius: 50%;
+          background-color: #ef4444;
+          border: 2px solid #ef4444;
+          cursor: pointer;
+        }
+      }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Responsive Simulator Wrapper Frame -->
+    <div class="h5-emulator-container">
+      <div class="iphone-bezel">
+        <!-- 1. Top Island cut-away -->
+        <div class="dynamic-island">
+          <div class="camera"></div>
+          <div class="sensor"></div>
+        </div>
+        
+        <!-- 2. Real-time Status indicators alignment row -->
+        <div class="ios-status-bar" id="status-bar">
+          <span class="ios-time" id="live-clock">12:35</span>
+          <div class="ios-icons">
+            <span>📶</span>
+            <span>📶</span>
+            <span>🔋</span>
+          </div>
+        </div>
+
+        <!-- 3. WeChat action capsule navigation controls overlays -->
+        <div class="wechat-menu-capsule" onclick="showMiniAppInfo()">
+          <div class="capsule-more">•••</div>
+          <div class="capsule-line"></div>
+          <div class="capsule-close" onclick="relaunchApp(event)"></div>
+        </div>
+
+        <!-- Master Vue application target -->
+        <div id="app"></div>
+      </div>
+    </div>
+
+    <!-- Active dynamic interactions script trackers -->
+    <script>
+      // 1. Dynamic Clock logic syncs seamlessly
+      function updateClock() {
+        const clockEl = document.getElementById('live-clock');
+        if (clockEl) {
+          const now = new Date();
+          const hours = String(now.getHours()).padStart(2, '0');
+          const minutes = String(now.getMinutes()).padStart(2, '0');
+          clockEl.textContent = `${hours}:${minutes}`;
+        }
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // 2. Adaptive Status Bar Color based on Router context
+      function matchStatusBarColors() {
+        const statusBar = document.getElementById('status-bar');
+        if (!statusBar) return;
+        
+        // Uni-app routes are hash based or standard pathnames
+        const path = window.location.hash || window.location.pathname;
+        
+        // Home page 'pages/index/index' is the main overlay requiring white content
+        if (
+          path === '' || 
+          path === '/' || 
+          path === '#/' || 
+          path === '#/pages/index/index' || 
+          path.includes('pages/index/index')
+        ) {
+          statusBar.style.color = '#ffffff';
+        } else {
+          statusBar.style.color = '#111111';
+        }
+      }
+      
+      // Hook events and fallback poller for absolute state tracking precision
+      window.addEventListener('hashchange', matchStatusBarColors);
+      window.addEventListener('popstate', matchStatusBarColors);
+      setInterval(matchStatusBarColors, 400);
+      matchStatusBarColors();
+
+      // 3. Mini Program general metadata popup box trigger
+      function showMiniAppInfo() {
+        alert('小程序信息:\n品牌: tbh 野兽派家居\n开发框架: Uni-app Vue3 + TypeScript\n视觉处理: Tailwind CSS v4.0.0\n状态: 智检沙盒环境运行中');
+      }
+
+      // 4. Trigger relaunch easily
+      function relaunchApp(event) {
+        if (event) event.stopPropagation();
+        const conf = confirm('确定重置小程序会话，返回高定艺术启动页吗？');
+        if (conf) {
+          window.location.href = window.location.origin + window.location.pathname;
+        }
+      }
+    </script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
-

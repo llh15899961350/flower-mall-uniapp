@@ -1,6 +1,6 @@
 {
-  "name": "WeChat Mini Program Previewer",
-  "description": "An interactive WeChat Mini Program emulator and developer environment for the BEAST tbh luxury lifestyle store, featuring real-time source code views, active console logs, and visual customization.",
+  "name": "tbh 野兽派家居",
+  "description": "基于 Uni-app 和 Vue 3 核心技术栈的高定奢侈家居微信小程序精品展示厅，内嵌优雅的移动端 H5 智检沙盒外框，包含高定床品、艺术花艺及高端香氛订购系统。",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

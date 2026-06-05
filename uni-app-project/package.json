@@ -2,22 +2,34 @@
   "name": "beast-uni-app",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:mp-weixin": "uni -p mp-weixin",
-    "dev:h5": "uni",
+    "dev:h5": "uni --port=3000 --host=0.0.0.0",
     "build:h5": "uni build"
   },
   "dependencies": {
-    "@dcloudio/uni-app": "3.0.0-alpha-4010820240508001",
-    "vue": "^3.3.0"
+    "@dcloudio/uni-app": "3.0.0-alpha-5010220260604001",
+    "vue": "3.5.35"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.0",
-    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-4010820240508001",
-    "tailwindcss": "^4.0.0",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5010220260604001",
+    "@tailwindcss/vite": "^4.1.14",
+    "tailwindcss": "^4.1.14",
     "weapp-tailwindcss": "^4.0.0",
     "typescript": "^4.9.5",
     "vite": "^5.2.0"
+  },
+  "overrides": {
+    "vue": "3.5.35",
+    "@vue/shared": "3.5.35",
+    "@vue/runtime-core": "3.5.35",
+    "@vue/compiler-core": "3.5.35",
+    "@vue/compiler-dom": "3.5.35",
+    "@vue/compiler-sfc": "3.5.35",
+    "@vue/runtime-dom": "3.5.35",
+    "@vue/server-renderer": "3.5.35"
   }
 }
